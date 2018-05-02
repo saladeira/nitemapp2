@@ -1,0 +1,726 @@
+//loadView
+
+//metodo pra carregamento de conteudo das parciais
+var pageLoaded = null;
+
+var map, idWatch, markerUser, markerPlace, accRadius, autocomplete;
+
+var markersUser = [];
+
+var markersPlace = [];
+
+var markersSearch = [];
+
+var markersRegistrado = [];
+
+var markersTemp = [];
+
+var searchResults, userResults;
+
+var filtroRaio = 100;
+
+var markerUserLoaded = false;
+
+function loadView(tag, url, transition, callback) {
+    if (url == '') {
+      $(tag).html('');
+
+      pageLoaded = '';
+    } else {
+
+      $('<link>')
+      .appendTo('head')
+      .attr({
+          type: 'text/css',
+          rel: 'stylesheet',
+          href: 'pages/' + url + '/' + url + '.css'
+      });
+
+      $(tag).load('pages/' + url + '/' + url + '.html', function (jqXHR, textStatus, responseText) {
+
+        pageLoaded = url;
+
+          $.getScript( 'pages/' + url + '/' + url + '.js')
+            .done(function (script, textStatus, responseText) {
+
+              $(tag).show();
+
+              if (callback && typeof(callback) === "function") {
+                callback();
+              };
+            })
+            .fail (function (jqxhr, settings, exception) {
+              window.alert(exception)
+            });
+
+      }).hide();
+    }
+};
+
+//Troca subview com fade
+function trocaSubview(aparece, some) {
+  let target = $('.'+aparece).attr('data-target');
+
+  $('#'+some).removeClass('show-opacity').addClass('hide-opacity');
+
+  setTimeout(function () {
+    loadView('nm-content', aparece, 'none', function () {
+      setTimeout(function () {
+        $('#'+aparece).removeClass('hide-opacity').addClass('show-opacity');
+      }, 200);
+    });
+  }, 200);
+
+};
+
+//VALIDADOR DE EMAIL COM O BANCO DE DADOS
+function validarEmail(data, div, callback) {
+
+  $.ajax({
+    type : 'GET',
+    url  : 'https://www.esbrubles.com.br/nitemapp/ver_email2.php',
+    data: 'email=' + data + '&fromLogin=fromLogin',
+    cache: false,
+    beforeSend: function() {
+      div.parent().find('.fas').toggleClass('fa-spinner fa-pulse');
+    },
+    success: function(jqXHR, data, response) {
+      div.parent().find('.fas').toggleClass('fa-spinner fa-pulse');
+      if (callback && typeof(callback) === "function") {
+        callback(response);
+      }
+
+    },
+    error: function(jqXHR, response) {
+      window.alert(response);
+    }
+  });
+};
+
+
+//ADICIONA USUARIO AO DB
+function addRowUser(target, formdata, callback) {
+
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/register.php',
+    data : formdata,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').addClass('fa-spinner fa-pulse');
+    },
+    success :  function(data, response) {
+      if (callback && typeof(callback) === "function") {
+        callback(data, response);
+      }
+    },
+    error: function(jqXHR, data, response) {
+      window.alert(jqXHR, response)
+    }
+  });
+};
+
+function recuperaSenha (target, formdata, callback) {
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/sendmail.php',
+    data : formdata,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').addClass('fa-spinner fa-pulse');
+    },
+    success :  function(data, response) {
+
+      $('#'+target.id).prop( "disabled", false ).find('.fas').removeClass('fa-spinner fa-pulse');
+
+      if (callback && typeof(callback) === "function") {
+        callback(data, response);
+      }
+
+    },
+    error: function(jqXHR, data, response) {
+      window.alert(jqXHR, response)
+    }
+  });
+}
+
+//APLICA ID AO LOGIN (NAO IMPORTA A ORIGEM)
+function setUserId(userId, first) {
+  localStorage.setItem('id', userId);
+
+  if (first == 'sim') {
+    localStorage.setItem('first', 'true')
+  }
+
+  loadView('nm-header', '', 'none')
+  loadView('nm-content', 'index_valida-logado', 'none');
+};
+
+//FAZ LOGIN COM BANCO DE DADOS
+function loginEmail(target, data, callback) {
+
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/login.php',
+    data : data,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').toggleClass('fa-spinner fa-pulse');
+    },
+    success :  function(response) {
+
+      $('#'+target.id).prop( "disabled", true ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      var JSONString = response; // Replace ... with your JSON String
+
+      var JSONObject = $.parseJSON(JSONString);
+
+      if (callback && typeof(callback) === "function") {
+        callback(data, JSONObject);
+      }
+
+    },
+    error: function(jqXHR, response) {
+      window.alert(jqXHR, response)
+    }
+  });
+};
+
+//Valida o codigo enviado por email para trocar a senha
+function verificaCodigo(target, data, callback) {
+
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/vercodigo.php',
+    data : data,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').toggleClass('fa-spinner fa-pulse');
+    },
+    success :  function(response, data) {
+
+      $('#'+target.id).prop( "disabled", false ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      var JSONString = response; // Replace ... with your JSON String
+
+      var JSONObject = $.parseJSON(JSONString);
+
+      if (callback && typeof(callback) === "function") {
+        callback(data, JSONObject);
+      }
+
+    },
+    error: function(jqXHR, response) {
+      window.alert(jqXHR, response)
+    }
+  });
+};
+
+//Renova a senha
+function renovarSenha(target, data, callback) {
+
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/updatesenha.php',
+    data : data,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').toggleClass('fa-spinner fa-pulse');
+    },
+    success :  function(response, data) {
+
+      $('#'+target.id).prop( "disabled", false ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      // var JSONString = response; // Replace ... with your JSON String
+      //
+      // var JSONObject = $.parseJSON(JSONString);
+
+      if (callback && typeof(callback) === "function") {
+        callback(data, response);
+      }
+
+    },
+    error: function(jqXHR, response) {
+      $('#'+target.id).prop( "disabled", false ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      window.alert(jqXHR, response)
+    }
+  });
+};
+
+//Remove first login
+function termosAceito(target, data, callback) {
+
+  $.ajax({
+    type : 'POST',
+    url  : 'https://www.esbrubles.com.br/nitemapp/updatesenha.php',
+    data : data,
+    cache: false,
+    beforeSend: function() {
+      $('#'+target.id).prop( "disabled", true ).find('.fas').toggleClass('fa-spinner fa-pulse');
+    },
+    success :  function(response, data) {
+
+      $('#'+target.id).prop( "disabled", false ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      // var JSONString = response; // Replace ... with your JSON String
+      //
+      // var JSONObject = $.parseJSON(JSONString);
+
+      if (callback && typeof(callback) === "function") {
+        callback(data, response);
+      }
+
+    },
+    error: function(jqXHR, response) {
+      $('#'+target.id).prop( "disabled", false ).find('.fas').toggleClass('fa-spinner fa-pulse');
+      window.alert(jqXHR, response)
+    }
+  });
+};
+
+//Para iniciar a geolocalização
+var fireOnce = true;
+function watchPos (callback) {
+
+  var opstionsGeo = {
+    enableHighAccuracy: false,
+    maximumAge: 0
+  };
+  console.log('positioning')
+  navigator.geolocation.watchPosition(
+    function(position){
+      if (callback && typeof(callback) === "function" && fireOnce) {
+        callback(position);
+        fireOnce = false;
+      }
+      localStorage.setItem('lat', position.coords.latitude);
+      localStorage.setItem('lng', position.coords.longitude);
+
+      if (markerUserLoaded) {
+        movePinUser(position);
+      }
+
+    },
+    function(error){
+      alert('Não foi possível te encontrar :(\nVerifique sua conexão ou permita que o aplicativo acesse sua localização')
+  }, opstionsGeo);
+};
+
+function movePinUser(pos) {
+
+  var moveTo = {
+    lat: pos.coords.latitude,
+    lng: pos.coords.longitude
+  };
+
+  markers[0].setPosition(moveTo);
+  accRadius.setCenter(moveTo);
+
+  if (pos.coords.accuracy < 50) {
+    accRadius.setRadius(0)
+  } else {
+    accRadius.setRadius(pos.coords.accuracy);
+    //accRadius.setRadius(0);
+  }
+}
+
+//Função para desenhar o mapa
+function initMap(pos) {
+
+  // geocoder = new google.maps.Geocoder();
+  //
+  // autocomplete = new google.maps.places.Autocomplete(
+  //   (document.getElementById('searchPlaceField')), {
+  //     types: ['geocode']
+  //   });
+  //
+  // autocomplete.addListener('place_changed', fillInAddress);
+
+  var posInit = {
+    lat: pos.coords.latitude,
+    lng: pos.coords.longitude
+  };
+
+  map = new google.maps.Map(document.getElementById('gmap'), {
+    center: posInit,
+    zoom: 17,
+    disableDefaultUI: true,
+    styles: estilo
+  });
+
+  addMarker(posInit, userIcon, '', 'user', false, true, '');
+  markerUserLoaded = true;
+  //
+  // getRegistered(800);
+  //
+  // map.addListener('dragend', function () {
+  //   getRegistered(800)
+  // })
+
+  accRadius = new google.maps.Circle({
+    strokeColor: '#FFFFFF',
+    strokeOpacity: 0,
+    strokeWeight: 1,
+    fillColor: '#e61367',
+    fillOpacity: 0.1,
+    map: map,
+    center: posInit,
+    clickable: false,
+    radius: pos.coords.accuracy
+  });
+
+  google.maps.event.addListener(map, 'click', function (event) {
+    console.log('fecha info')
+  });
+
+}; // fim do init map
+
+//Cria ID randomico e grande
+var criaID = function () {
+  // Math.random should be unique because of its seeding algorithm.
+  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+  // after the decimal.
+  return Math.random().toString(36).substr(2, 9);
+};
+
+
+var markers = [];
+
+//Icones para o mapa
+var searchIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.8,
+  fillColor: '#6c9880',
+  strokeOpacity: 1,
+  strokeColor: '#6c9880',
+  strokeWeight: 3,
+  scale: 8 //pixels
+};
+
+var userIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.3,
+  fillColor: '#e61367',
+  strokeOpacity: 1,
+  strokeColor: '#e61367',
+  strokeWeight: 2,
+  scale: 5 //pixels
+};
+
+var placeIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.4,
+  fillColor: '#eabd4d',
+  strokeOpacity: 0.7,
+  strokeColor: '#eabd4d',
+  strokeWeight: 1,
+  labelOrigin: new google.maps.Point(0, -3),
+  scale: 8 //pixels
+};
+
+var tempIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 1,
+  fillColor: '#e61367',
+  strokeOpacity: 0.7,
+  strokeColor: '#e61367',
+  strokeWeight: 1,
+  scale: 4 //pixels
+};
+
+var registeredIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.9,
+  fillColor: '#eabd4d',
+  strokeOpacity: 1,
+  strokeColor: '#eabd4d',
+  strokeWeight: 3,
+  labelOrigin: new google.maps.Point(0, -3),
+  scale: 8 //pixels
+};
+
+var validIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.9,
+  fillColor: '#40948f',
+  strokeOpacity: 1,
+  strokeColor: '#40948f',
+  strokeWeight: 3,
+  scale: 8 //pixels
+};
+
+var clickIcon = {
+  path: google.maps.SymbolPath.CIRCLE,
+  fillOpacity: 0.9,
+  fillColor: '#e61367',
+  strokeOpacity: 0,
+  strokeColor: '#e61367',
+  strokeWeight: 0,
+  scale: 10 //pixels
+};
+
+var opstionsGeo = {
+  enableHighAccuracy: true,
+  maximumAge: 0
+};
+
+//Adiconar marcadores
+function addMarker(latLng, icone, label, tipo, drag, clique, index) {
+
+  if (label != '') {
+    marker = new google.maps.Marker({
+      id: criaID(),
+      marcador: tipo,
+      index: index,
+      position: latLng,
+      map: map,
+      draggable: drag,
+      clickable: clique,
+      icon: icone,
+      label: {
+        text: label,
+        fontSize: '12px',
+        fontFamily: '"Source Sans Pro", sans-serif',
+        color: 'white'
+      },
+      optimized: false
+    });
+  } else {
+    marker = new google.maps.Marker({
+      id: criaID(),
+      marcador: tipo,
+      index: index,
+      position: latLng,
+      map: map,
+      draggable: drag,
+      clickable: clique,
+      icon: icone,
+      optimized: false
+    });
+  }
+
+  markerId = marker.id;
+
+  markerTipo = marker.marcador;
+
+  google.maps.event.addListener(marker, 'click', (function(marker, markerId, markerTipo) {
+    return function(event) {
+      abrirModalBottom(marker.marcador)
+      //openInfo(marker.position, ($(window).height()/2)-toPanX, ($(window).width()/2)-toPanY, marker.marcador);
+      //addListeners();
+    }
+  })(marker, markerId, markerTipo));
+
+  google.maps.event.addListener(marker, 'dragend', (function(marker, markerId, markerTipo) {
+    return function(event) {
+      console.log('drag')
+      marker.setPosition(event.latLng);
+      $('#searchPlaceField').val('').blur();
+      reverseGeocode(event.latLng, function(status, res) {
+        if (status == 'ok') {
+          searchResults = res;
+        } else {
+          alert(status)
+        }
+      });
+    }
+  })(marker, markerId, markerTipo));
+
+  //addDrag(tipo, marker.id);
+
+  markers.push(marker);
+
+  if (tipo == 'search') {
+    markersSearch.push(marker);
+  }
+
+  if (tipo == 'place') {
+    markersPlace.push(marker);
+  }
+
+  if (tipo == 'registrado') {
+    markersRegistrado.push(marker);
+  }
+
+  if (tipo == 'temp') {
+    markersTemp.push(marker);
+  }
+
+};//fim do add Marker
+
+
+
+//ESTILO DO MAPA - não colocar nada ABAIXO//estilo do mapa - NAO COLOCAR NADA ABAIXO
+var estilo = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#242f3e"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative.locality",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#263c3f"
+      }
+    ]
+  },
+  {
+    "featureType": "poi.park",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#6b9a76"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#38414e"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#212a37"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#9ca5b3"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#746855"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      {
+        "color": "#1f2835"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#f3d19c"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#2f3948"
+      }
+    ]
+  },
+  {
+    "featureType": "transit.station",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#d59563"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#515c6d"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#17263c"
+      }
+    ]
+  }
+]

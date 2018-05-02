@@ -1,0 +1,38 @@
+<div id="login_cadastrar-formulario" class="hide-opacity">
+  <div class="wrapper">
+
+    <form class="formulario" method="post" id="formulario-cadastrar" accept-charset="utf-8">
+
+      <input id="fromSignup" type="hidden" name="fromSignup" value="fromSignup" autocomplete="off">
+      <input id="fbRegister" type="hidden" name="fbRegister" value="false" autocomplete="off">
+
+      <div class="input-holder">
+        <input class="text-field" id="email-cadastro" type="email" name="email" value="" autocomplete="off" placeholder="E-mail">
+        <i class="fas"></i>
+        <p class="feedback hide"></p>
+      </div>
+
+      <div class="input-holder">
+        <input class="text-field" id="senha-cadastro" type="password" name="senha" value="" autocomplete="off" placeholder="Senha">
+        <p class="feedback hide"></p>
+      </div>
+
+      <div class="input-holder">
+        <input class="text-field" id="senha-cadastro-2" type="password" name="senha2" value="" autocomplete="off" placeholder="Repetir senha">
+        <p class="feedback hide"></p>
+      </div>
+
+    </form>
+
+    <div class="button-group">
+      <button type="submit" name="bt-cadastro" id="bt-cadastro" class="button block main regular bt-cadastrar">Cadastrar</button>
+
+      <button name="fb-login" id="fb-login" class="button block social small fb-entrar">Entrar com facebook<i id="fb-help" class="" aria-hidden="true"></i></button>
+    </div>
+
+    <div  class="link click" data-target="login_entrar-formulario">
+      <p>já tenho uma conta</p>
+    </div>
+
+  </div>
+</div>

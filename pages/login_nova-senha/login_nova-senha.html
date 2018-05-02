@@ -1,0 +1,40 @@
+<div id="login_nova-senha" class="hide-opacity">
+  <div class="wrapper">
+
+    <p class="paragrafo">Insira o seu e-mail registrado. Você receberá um código para redefinir sua senha.</p>
+    <form class="formulario" method="post" id="formulario-novasenha" accept-charset="utf-8">
+
+      <input id="fromNovaSenha" type="hidden" name="fromNovaSenha" value="fromNovaSenha" autocomplete="off">
+
+      <div class="input-holder">
+        <input class="text-field" id="email-novasenha" type="email-novasenha" name="email-novasenha" value="" autocomplete="off" placeholder="E-mail">
+        <i class="fas"></i>
+        <p class="feedback hide"></p>
+      </div>
+
+      <div class="input-holder remove-display aparece">
+        <input class="text-field" id="codigo-novasenha" type="codigo-novasenha" name="codigo-novasenha" value="" autocomplete="off" placeholder="Insira o código que receber no e-mail">
+        <i class="fas"></i>
+        <p class="feedback hide"></p>
+      </div>
+
+    </form>
+
+    <div id="outro-codigo" class="link remove-display aparece2">
+      <p id="placeholder" class="small">Enviar outro código.</p>
+    </div>
+
+    <div class="button-group some">
+      <button type="submit" name="bt-recuperar" id="bt-recuperar" class="button block main regular">Enviar código de recuperação. <i class="fas"></i></button>
+    </div>
+
+    <div class="button-group remove-display aparece">
+      <button type="submit" name="bt-enviar-codigo" id="bt-enviar-codigo" class="button block main regular">Redefinir a senha. <i class="fas"></i></button>
+    </div>
+
+    <div  class="link click" data-target="login_entrar-formulario">
+      <p>voltar para tela inicial</p>
+    </div>
+
+  </div>
+</div>

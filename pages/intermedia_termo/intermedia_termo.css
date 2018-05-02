@@ -1,0 +1,39 @@
+#intermedia_termo {
+  height: 100%;
+}
+
+#intermedia_termo .wrapper {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex {
+  width: 100%;
+}
+
+.flex-header {
+  padding-bottom: 1.3rem;
+}
+
+.flex-header h1 {
+  font-size: 1.5rem;
+  font-weight: 200;
+}
+
+.flex-body {
+  flex-grow: 2;
+  overflow: auto;
+}
+
+.flex-body p {
+  font-size: 0.84rem;
+}
+
+.flex-footer {
+  padding-top: 1.3rem;
+}

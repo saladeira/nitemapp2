@@ -1,0 +1,415 @@
+/* Cores
+#2f323a - gunmetal - background
+#e61367 - magenta
+#d56793 - fade magenta
+#EF626C - vermelho queimado
+#FBB13C - amarelo
+#EC8E2C - laranja
+#EE9E45 - laranja apagado
+#4E8485 - verde azulado
+#fbfbff - off white cold
+#F7F0F0 - isabelline - claro/ texto */
+
+* {
+  outline: none;
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  -ms-box-sizing:border-box;
+  box-sizing:border-box;
+}
+
+body, html {
+  margin:0px;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  text-rendering: optimizeLegibility;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 200;
+  font-size: 16px;
+  color: #F7F0F0;
+  background-color: #2f323a;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Lato', sans-serif;
+  margin:0px;
+  padding:0px;
+}
+
+p {
+  margin: 0px;
+  padding: 0px;
+}
+
+textarea, input, button {
+  background-color: transparent;
+  margin: 0px;
+}
+
+ul {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.wrapper-main {
+  box-sizing: border-box;
+  padding: 2rem;
+  height: 100%;
+}
+
+nm-header, nm-content, nm-footer {
+  width: 100%;
+}
+
+input, button, textarea, select {
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.fundo-animado {
+  background: linear-gradient(220deg, #2f323a, #4b3e5c);
+  background-size: 400% 400%;
+
+  -webkit-animation: AnimationName 11s ease infinite;
+  -moz-animation: AnimationName 11s ease infinite;
+  -o-animation: AnimationName 11s ease infinite;
+  animation: AnimationName 11s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-o-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+.hide-opacity {
+  opacity: 0;
+}
+
+.show-opacity {
+  opacity: 1;
+}
+
+.button {
+  padding: 0.75rem;
+  border-radius: 1.5rem;
+  position: relative;
+}
+
+.button:disabled {
+  opacity: 0.7;
+}
+
+.regular {
+  font-size: 0.9rem;
+}
+
+.small {
+  font-size: 0.8rem;
+}
+
+.main {
+  color: #F7F0F0;
+  background-color: #e61367;
+}
+
+.social {
+  color: #F7F0F0;
+  background-color: #3b5998;
+}
+
+.block {
+  width: 100%;
+}
+
+.button {
+  margin-bottom: 1.8vh;
+  -webkit-transition: opacity 0.4s ease-in-out;
+  -moz-transition: opacity 0.4s ease-in-out;
+  -ms-transition: opacity 0.4s ease-in-out;
+  -o-transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.input-holder {
+  position: relative;
+  padding: 0.2rem;
+  border-radius: 1.5rem;
+  margin-bottom: 3vh;
+
+  -webkit-transition: box-shadow 0.3s ease-in-out;
+  -moz-transition: box-shadow 0.3s ease-in-out;
+  -ms-transition: box-shadow 0.3s ease-in-out;
+  -o-transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out;
+
+  -webkit-transition: opacity 0.4s ease-in-out;
+  -moz-transition: opacity 0.4s ease-in-out;
+  -ms-transition: opacity 0.4s ease-in-out;
+  -o-transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
+
+  /*border*/
+  box-shadow: 0px 0px 0px 2px #fbfbff;
+}
+
+.check-holder {
+  margin-bottom: 3vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 300;
+
+  -webkit-transition: box-shadow 0.3s ease-in-out;
+  -moz-transition: box-shadow 0.3s ease-in-out;
+  -ms-transition: box-shadow 0.3s ease-in-out;
+  -o-transition: box-shadow 0.3s ease-in-out;
+  transition: box-shadow 0.3s ease-in-out;
+
+  -webkit-transition: opacity 0.4s ease-in-out;
+  -moz-transition: opacity 0.4s ease-in-out;
+  -ms-transition: opacity 0.4s ease-in-out;
+  -o-transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.check-holder input {
+  height: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+/* Hide the checkbox */
+.check-holder [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+
+/* Prepare the label */
+.check-holder [type="checkbox"]:not(:checked) + label, [type="checkbox"]:checked + label {
+  position: relative; /* permet de positionner les pseudo-éléments */
+  padding-left: 2rem; /* fait un peu d'espace pour notre case à venir */
+}
+
+/* Checkboxes aspect */
+/* :before is for the box */
+.check-holder [type="checkbox"]:not(:checked) + label:before {
+  content: '';
+  position: absolute;
+  left:0;
+  top: 0.5rem;
+  width: 1rem;
+  height: 1rem; /* dim. of the box */
+  border: 3px solid #F7F0F0;
+  background: #d56793;
+  border-radius: 50%;
+  transition: all .2s; /* animation incoming :p */
+}
+
+.check-holder  [type="checkbox"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left:0;
+  top: 0.5rem;
+  width: 1rem;
+  height: 1rem; /* dim. of the box */
+  border: 3px solid #F7F0F0;
+  background: #e61367;
+  border-radius: 50%;
+  transition: all .2s; /* animation incoming :p */
+}
+
+/* Check symbol aspect */
+.check-holder [type="checkbox"]:not(:checked) + label:after, [type="checkbox"]:checked + label:after {
+  content: '';
+  position: absolute;
+  top: 0.95rem;
+  left: 0.45rem;
+  width: 0.5rem;
+  height: 0.5rem; /* dim. of the box */
+  background: #F7F0F0;
+  border-radius: 50%;
+  transition: all .2s; /* animation incoming :p */
+}
+
+/* if "not checked" */
+.check-holder [type="checkbox"]:not(:checked) + label:after {
+  opacity: 0; /* invisible */
+  transform: scale(0); /* scaled down to 0 */
+}
+/* If "checked" */
+.check-holder [type="checkbox"]:checked + label:after {
+  opacity: 1; /* visible */
+  transform: scale(1); /* scaled up to normal */
+}
+
+.remove-display {
+  display: none;
+  opacity: 0;
+}
+
+div.input-holder:last-child {
+  margin-bottom: 0vh;
+}
+
+.input-holder i {
+  position: absolute;
+  top: 30%;
+  right:3.5%;
+}
+
+.input-holder.fundo {
+  background-color: rgba(47, 50, 58, 0.8)
+}
+
+.button-group {
+  margin-top: 4vh;
+
+  -webkit-transition: opacity 0.4s ease-in-out;
+  -moz-transition: opacity 0.4s ease-in-out;
+  -ms-transition: opacity 0.4s ease-in-out;
+  -o-transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.button i {
+  position: absolute;
+  top: 30%;
+  right:3.5%;
+}
+
+.input-holder.focus {
+  box-shadow: 0px 0px 0px 3px #fbfbff;
+}
+
+.valido {
+  box-shadow: 0px 0px 0px 2px #8AEA92;
+}
+
+.invalido {
+  box-shadow: 0px 0px 0px 3px #EF626C;
+}
+
+.erro {
+  box-shadow: 0px 0px 0px 3px #FBB13C;
+}
+
+input {
+  padding: 0.6rem;
+  letter-spacing: 0.05rem;
+  font-size: 0.9rem;
+  color: #F7F0F0;
+  font-weight: 200;
+  width: 99%;
+}
+
+input::placeholder {
+  letter-spacing: 0.05rem;
+  font-size: 0.9rem;
+  color: #F7F0F0;
+  font-weight: 200;
+  opacity: 0.3;
+}
+
+.text-field {
+  padding: 0.4rem;
+}
+
+.valido input {
+  font-weight: 200;
+  color: #8AEA92;
+}
+
+.invalido input {
+  font-weight: 200;
+  color: #EF626C;
+}
+
+.erro input {
+  font-weight: 200;
+  color: #FBB13C;
+}
+
+.link {
+  margin-top: 0.8vh;
+}
+
+.link p {
+  text-align: center;
+}
+
+.link p.small {
+  font-size: 0.8rem;
+  text-align: right;
+  padding-right: 3%;
+  font-style: italic;
+}
+
+.feedback {
+  font-size: 0.8rem;
+  font-weight: 700;
+  position: absolute;
+  top: 23%;
+  right: 3%;
+  text-align: right;
+  pointer-events: none;
+  padding: 0;
+  opacity: 0;
+  border-radius: 2rem;
+  color: #2f323a;
+
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.valido p.feedback {
+  padding: 0.2rem 0.5rem;
+  opacity: 0;
+  background-color: #8AEA92;
+}
+
+.invalido p.feedback {
+  padding: 0.2rem 0.5rem;
+  opacity: 1;
+  background-color: #EF626C;
+}
+
+.erro p.feedback {
+  padding: 0.2rem 0.5rem;
+  opacity: 1;
+  background-color: #FBB13C;
+}
+
+p.paragrafo {
+  font-size: 1rem;
+  text-align: center;
+  padding:0 0 5vh 0;
+}

@@ -1,0 +1,36 @@
+<div id="login_entrar-formulario" class="hide-opacity">
+  <div class="wrapper">
+
+    <form class="formulario" method="post" id="formulario-entrar" accept-charset="utf-8">
+
+      <input id="fromLogin" type="hidden" name="fromLogin" value="fromLogin" autocomplete="off">
+
+      <div class="input-holder">
+        <input class="text-field" id="email" type="email" name="email" value="" autocomplete="off" placeholder="E-mail">
+        <i class="fas"></i>
+        <p class="feedback hide"></p>
+      </div>
+
+      <div class="input-holder">
+        <input class="text-field" id="senha" type="password" name="senha" value="" autocomplete="off" placeholder="Senha">
+        <p class="feedback hide"></p>
+      </div>
+
+    </form>
+
+    <div  class="link click" data-target="login_nova-senha">
+      <p class="small">Esqueci minha senha</p>
+    </div>
+
+    <div class="button-group">
+      <button type="submit" name="bt-entrar" id="bt-entrar" class="button block main regular bt-entrar">Entrar <i class="fas"></i></button>
+
+      <button name="fb-login" id="fb-login" class="button block social small fb-entrar">Entrar com facebook<i id="fb-help" class="" aria-hidden="true"></i></button>
+    </div>
+
+    <div  class="link click" data-target="login_cadastrar-formulario">
+      <p>quero me cadastrar</p>
+    </div>
+
+  </div>
+</div>

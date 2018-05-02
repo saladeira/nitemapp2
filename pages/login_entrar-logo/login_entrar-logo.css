@@ -1,0 +1,35 @@
+#login_entrar-logo .wrapper {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+
+#login_entrar-logo img {
+  width: 25vh;
+  display: block;
+  height: auto;
+  margin: 25vh auto;
+
+  -moz-transition: all 0.5s ease-out;
+  -webkit-transition: all 0.5s ease-out;
+  -o-transition: all 0.5s ease-out;
+  transition: all 0.5s ease-out;
+}
+
+#login_entrar-logo img.up {
+  -moz-transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -o-transform: scale(0.9);
+  transform: scale(0.9);
+
+  margin: 5vh auto 5vh auto;
+}
+
+#login_entrar-logo img.up-up {
+  -moz-transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  -o-transform: scale(0.9);
+  transform: scale(0.9);
+
+  margin: 4vh auto 7vh auto;
+}
