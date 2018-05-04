@@ -320,17 +320,65 @@ function movePinUser(pos) {
   }
 }
 
+//Coloca marcadores adicionados com a busca em um array pra depois remove-los
+function setMapOnAll(map, tipo) {
+  for (var i = 0; i < markers.length; i++) {
+    if (markers[i].marcador == tipo || tipo == 'todos') {
+      markers[i].setMap(map);
+    }
+  }
+};
+
+//executa a busca por endereço
+function codeAddress() {
+
+  fechaInfo();
+
+  searchAddress = document.getElementById('search-address').value;
+
+  geocoder.geocode( { 'address': searchAddress}, function(results, status) {
+
+    if (status == 'OK') {
+      setMapOnAll(null, 'search'); //remove todos os marcadores do tipo search antes de mostrar os novos
+      searchResults = results[0];
+
+      map.panTo(results[0].geometry.location);
+
+      addMarker(results[0].geometry.location, searchIcon, '', 'search', true, false, '');
+
+      //getRegistered(800);
+
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+};
+
+reverseGeocode = function(latlng, f){
+    if(typeof latlng != 'undefined' && latlng != null) {
+        geocoder.geocode( {'location': latlng}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            f('ok', results);
+          } else {
+            f('error', null);
+          }
+        });
+    } else {
+      f('error', null);
+    }
+}
+
 //Função para desenhar o mapa
 function initMap(pos) {
 
-  // geocoder = new google.maps.Geocoder();
-  //
-  // autocomplete = new google.maps.places.Autocomplete(
-  //   (document.getElementById('searchPlaceField')), {
-  //     types: ['geocode']
-  //   });
-  //
-  // autocomplete.addListener('place_changed', fillInAddress);
+  geocoder = new google.maps.Geocoder();
+
+  autocomplete = new google.maps.places.Autocomplete(
+    (document.getElementById('search-address')), {
+      types: ['geocode']
+    });
+
+  autocomplete.addListener('place_changed', codeAddress);
 
   var posInit = {
     lat: pos.coords.latitude,
@@ -366,10 +414,17 @@ function initMap(pos) {
   });
 
   google.maps.event.addListener(map, 'click', function (event) {
-    console.log('fecha info')
+    fechaInfo()
   });
 
 }; // fim do init map
+
+//Fechar info do clique
+function fechaInfo() {
+  console.log('fecha info');
+  $('#modal-bottom').transition({y: '0px'}, 300, 'ease');
+  $('.modal-image').transition({y: '40px', x: '0px', scale: 1}, 300, 'ease');
+}
 
 //Cria ID randomico e grande
 var criaID = function () {
@@ -501,7 +556,7 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
   google.maps.event.addListener(marker, 'click', (function(marker, markerId, markerTipo) {
     return function(event) {
-      abrirModalBottom(marker.marcador)
+      abrirInfo(marker.marcador)
       //openInfo(marker.position, ($(window).height()/2)-toPanX, ($(window).width()/2)-toPanY, marker.marcador);
       //addListeners();
     }
@@ -543,6 +598,23 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
   }
 
 };//fim do add Marker
+
+//abre Modal da parte de baixo e insere o view dependendo do marcador
+function abrirInfo(marcador) {
+
+  $('#modal-bottom').transition({y: '-60px'}, 300, 'ease');
+  $('.modal-image').transition({y: '-25px', x: '0px', scale: 1}, 300, 'ease');
+
+  if (marcador == 'user') {
+    fecharModal = true;
+  }
+
+  if (marcador == 'search') {
+    fecharModal = true;
+  }
+
+  console.log(marcador)
+}
 
 
 

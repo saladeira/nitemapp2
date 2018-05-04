@@ -75,3 +75,38 @@
   padding: 1.7rem 0.25rem 0rem 0.25rem;
   height: 60px;
 }
+
+.modal-content p.modal-image {
+  position: relative;
+  top: 1rem;
+  left: 1rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 100%;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.modal-content img {
+  max-width: 100%;
+  -webkit-backface-visibility: hidden;
+}
+
+.modal-wrapper {
+  position: relative;
+  top: -3.6rem;
+  left: 5.8rem;
+  width: 80%;
+}
+
+.modal-wrapper .header h1 {
+  color: #2f323a;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.modal-wrapper .header p {
+  color: #2f323a;
+  font-size: 0.8rem;
+  font-weight: 300;
+}
