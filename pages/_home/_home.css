@@ -21,8 +21,6 @@
 
 .modal {
   width: 100%;
-  z-index: 1;
-  padding: 0 0.75rem;
 
   -webkit-transition: bottom 0.4s ease-in-out;
   -moz-transition: bottom 0.4s ease-in-out;
@@ -41,6 +39,8 @@
 
 .upper {
   position: absolute;
+  padding: 0.5rem 1rem;
+  z-index: 4;
 
   -webkit-transition: all 0.7s ease-in-out;
   -moz-transition: all 0.7s ease-in-out;
@@ -51,6 +51,8 @@
 
 .upper.opened {
   top: 0px;
+  width: 100%;
+
 }
 
 .upper.closed {
@@ -58,55 +60,80 @@
 }
 
 .modal-content {
+  position: relative;
   width: 100%;
-  background-color: white;
-  height: 400px;
-  border-top-left-radius: 0.2rem;
-  border-top-right-radius: 0.2rem;
+  background-color: #5D576B;
+  height: 100vh;
+
+  z-index: 3;
 
   -webkit-appearance: none;
-  -webkit-box-shadow: 0px 0px 37px -13px rgba(0,0,0,0.75);
-  -moz-box-shadow: 0px 0px 37px -13px rgba(0,0,0,0.75);
-  box-shadow: 0px 0px 37px -13px rgba(0,0,0,0.75);
+  -webkit-box-shadow: 0px 0px 37px 6px rgba(0,0,0,0.3);
+  -moz-box-shadow: 0px 0px 37px 6px rgba(0,0,0,0.3);
+  box-shadow: 0px 0px 37px 6px rgba(0,0,0,0.3);
 }
 
 .modal-placeholder {
   width: 100%;
   padding: 1.7rem 0.25rem 0rem 0.25rem;
-  height: 60px;
+  /* height: 60px; */
 }
 
-.modal-content p.modal-image {
+#modal-bottom p.modal-image {
   position: relative;
-  top: 1rem;
-  left: 1rem;
+
+  z-index: 2;
+
+  -webkit-transform: translate(40vw, 50vh);
+  transform: translate(40vw, 50vh);
+
+  /* top: 1rem;
+  left: 1rem; */
+
   width: 4rem;
   height: 4rem;
   border-radius: 100%;
   overflow: hidden;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
-.modal-content img {
+#modal-bottom p img {
   max-width: 100%;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .modal-wrapper {
   position: relative;
-  top: -3.6rem;
+  overflow: hidden;
+  padding: 1.3rem;
+
+  width: 100vw;
+
+  -webkit-transform: translate(0vw, 0);
+  transform: translate(0vw, 0);
+
+
+  /* top: -50px;
   left: 5.8rem;
-  width: 80%;
+  width: 80%; */
+}
+
+.modal-wrapper .content {
+  overflow: hidden;
 }
 
 .modal-wrapper .header h1 {
-  color: #2f323a;
+  color: #F7F0F0;
   font-size: 1.3rem;
-  font-weight: 700;
+  line-height: 1.35rem;
+  /* font-weight: 700; */
 }
 
 .modal-wrapper .header p {
-  color: #2f323a;
+  color: #F7F0F0;
   font-size: 0.8rem;
   font-weight: 300;
+  /* margin-top: -2px; */
 }

@@ -10,6 +10,14 @@
 #fbfbff - off white cold
 #F7F0F0 - isabelline - claro/ texto */
 
+@font-face {
+  font-family: 'system';
+  font-style: normal;
+  src: local(".SFNSText-Light"), local(".HelveticaNeueDeskInterface-Light"),
+       local(".LucidaGrandeUI"), local("Ubuntu Light"), local("Segoe UI Light"),
+       local("Roboto-Light"), local("DroidSans"), local("Tahoma");
+}
+
 * {
   outline: none;
   -webkit-box-sizing:border-box;
@@ -29,7 +37,7 @@ body, html {
 }
 
 body {
-  font-family: 'Lato', sans-serif;
+  font-family: 'system', sans-serif;
   font-weight: 300;
   font-size: 16px;
   color: #F7F0F0;
@@ -37,7 +45,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'system', sans-serif;
   margin:0px;
   padding:0px;
 }

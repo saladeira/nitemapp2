@@ -28,19 +28,17 @@ $('#modal-bottom').swipe( {
     swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
 
       if (direction == 'up') {
-        var goTo = ($('#modal-bottom').width()/2)-(($('.modal-image').width()*1.5)/2);
-        console.log(goTo)
-        $('#modal-bottom').transition({y: '-400px'}, 600, 'ease');
-        $('.modal-image').transition({y: '-70px', x: goTo+'px', scale: 2}, 600, 'ease');
+        animateModal('open')
+
         fecharModal = false;
       } else if (direction == 'down') {
         if (!fecharModal) {
-          $('#modal-bottom').transition({y: '-60px'}, 600, 'ease');
-          $('.modal-image').transition({y: '-35px', x: '0px', scale: 1}, 600, 'ease');
+          animateModal('tease')
+
           fecharModal = true;
         } else {
-          $('#modal-bottom').transition({y: '70px'}, 600, 'ease');
-          $('.modal-image').transition({y: '0px', x: '0px', scale: 1}, 600, 'ease');
+          animateModal('close')
+
           fecharModal = false;
         }
 
