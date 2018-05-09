@@ -620,14 +620,30 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 function animateModal(estagio) {
   if (estagio == 'tease') {
 
-    $('.modal-content').transition({y: '-25vh'}, 300, 'easeOutCubic');
-    $('.modal-image').transition({x: '40vw', y: '-20vh', scale: 2}, 700, 'easeOutCubic');
-    //$('.modal-wrapper').transition({x: '15vw', y: '-10vh'}, 500, 'ease');
+    let subirTanto = $('.modal-wrapper .header').outerHeight();
+
+    let stageHeight = $(document).outerHeight();
+
+    console.log(subirTanto, stageHeight);
+
+    let porcentSobe = (100*subirTanto)/stageHeight;
+
+    console.log(porcentSobe)
+
+    $('.modal-content').transition({y: -(porcentSobe*2)+'%'}, 300, 'easeOutCubic');
+    $('.modal-image').transition({x: '42vw', y: '-21vh', scale: 2, zIndex: 2}, 700, 'easeOutCubic');
+    $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
 
   } else if (estagio == 'open') {
 
     $('.modal-content').transition({y: '-70vh'}, 500, 'ease');
-    $('.modal-image').transition({x: '40vw', y: '-2vh', scale: 2}, 500, 'ease');
+    $('.modal-image').transition({x: '42vw', y: '-75vh', scale: 2}, 700, 'easeOutCubic', function () {
+      $('.modal-image').transition({zIndex: 5}, 100, 'ease', function () {
+        $('.modal-image').transition({x: '42vw', y: '-68vh', scale: 2}, 200, 'easeInCubic')
+      })
+    });
+
+    $('.modal-wrapper').transition({y: '5vh'}, 500, 'ease');
 
   } else if (estagio == 'close') {
 

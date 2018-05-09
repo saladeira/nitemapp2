@@ -62,7 +62,8 @@
 .modal-content {
   position: relative;
   width: 100%;
-  background-color: #5D576B;
+  background-color: #fbfbff;
+  /*#E4BAAE*/
   height: 100vh;
 
   z-index: 3;
@@ -96,6 +97,8 @@
   overflow: hidden;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
+
+  border: 3px solid #2f323a;
 }
 
 #modal-bottom p img {
@@ -107,7 +110,6 @@
 .modal-wrapper {
   position: relative;
   overflow: hidden;
-  padding: 1.3rem;
 
   width: 100vw;
 
@@ -124,16 +126,69 @@
   overflow: hidden;
 }
 
+.modal-wrapper .header {
+  /* background-color: #F7F0F0; */
+  padding: 1.7rem 1.2rem;
+}
+
 .modal-wrapper .header h1 {
-  color: #F7F0F0;
-  font-size: 1.3rem;
-  line-height: 1.35rem;
-  /* font-weight: 700; */
+  color: #e61367;
+  font-size: 1.1rem;
+  line-height: 1.2rem;
+  font-weight: 700;
+  padding-bottom: 0.1rem;
 }
 
 .modal-wrapper .header p {
-  color: #F7F0F0;
+  color: #a4a4a4;
   font-size: 0.8rem;
+  font-weight: 300;
+}
+
+.modal-wrapper .badges {
+  /* background-color: #F7F0F0; */
+  padding: 0 1.2rem;
+}
+
+.badges p.badge-image {
+
+  display: inline-block;
+
+  /* top: 1rem;
+  left: 1rem; */
+
+  width: 4rem;
+  height: 4rem;
+  border-radius: 100%;
+  overflow: hidden;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  border: 2px solid #dadada;
+}
+
+.badges p img {
+  max-width: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.modal-wrapper .descript {
+  /* background-color: #F7F0F0; */
+  padding: 1.7rem 1.2rem;
+}
+
+.modal-wrapper .descript h1 {
+  color: #e61367;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+  font-weight: 600;
+  padding-bottom: 0.3rem;
+}
+
+.modal-wrapper .descript p {
+  color: #181818;
+  font-size: 0.9rem;
   font-weight: 300;
   /* margin-top: -2px; */
 }
