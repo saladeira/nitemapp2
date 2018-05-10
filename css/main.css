@@ -35,12 +35,12 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Comfortaa', cursive;
+  font-family: 'Julius Sans One', sans-serif;
   margin:0px;
   padding:0px;
 }
 
-p {
+p, span {
   font-family: 'Open Sans', sans-serif;
   margin: 0px;
   padding: 0px;
@@ -283,10 +283,6 @@ div.input-holder:last-child {
   right:3.5%;
 }
 
-.input-holder.fundo {
-  background-color: rgba(47, 50, 58, 0.8)
-}
-
 .button-group {
   margin-top: 4vh;
 
@@ -304,19 +300,23 @@ div.input-holder:last-child {
 }
 
 .input-holder.focus {
+  -webkit-box-shadow: 0px 0px 0px 3px #fbfbff;
   box-shadow: 0px 0px 0px 3px #fbfbff;
 }
 
 .valido {
   box-shadow: 0px 0px 0px 2px #8AEA92;
+  -webkit-box-shadow: 0px 0px 0px 2px #8AEA92;
 }
 
 .invalido {
   box-shadow: 0px 0px 0px 3px #EF626C;
+  -webkit-box-shadow: 0px 0px 0px 3px #EF626C;
 }
 
 .erro {
   box-shadow: 0px 0px 0px 3px #FBB13C;
+  -webkit-box-shadow: 0px 0px 0px 3px #FBB13C;
 }
 
 input {
