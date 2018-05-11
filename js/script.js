@@ -426,16 +426,38 @@ function fechaInfo() {
 }
 
 //abre Modal da parte de baixo e insere o view dependendo do marcador
-function abrirInfo(marcador) {
-
-  animateModal('tease');
+function abrirInfo(marcador, latLng) {
 
   if (marcador == 'user') {
     fecharModal = true;
+
+    reverseGeocode(latLng, function(status, res) {
+      if (status == 'ok') {
+        let endereco = res[0].address_components[1].short_name + ', ';
+        endereco += res[0].address_components[0].short_name + ' - ';
+        endereco += res[0].address_components[3].short_name + '/';
+        endereco += res[0].address_components[5].short_name;
+
+        $('p.local-endereco').html(endereco);
+
+        $('h1.local-titulo').html('Você está aqui! ;)')
+
+        $('.modal-wrapper .eventos').hide();
+
+        animateModal('tease');
+
+      } else {
+        alert(status)
+      }
+    });
+
+
   }
 
   if (marcador == 'search') {
     fecharModal = true;
+
+    animateModal('tease');
   }
 
   console.log(marcador)
@@ -571,7 +593,7 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
   google.maps.event.addListener(marker, 'click', (function(marker, markerId, markerTipo) {
     return function(event) {
-      abrirInfo(marker.marcador)
+      abrirInfo(marker.marcador, marker.position)
       //openInfo(marker.position, ($(window).height()/2)-toPanX, ($(window).width()/2)-toPanY, marker.marcador);
       //addListeners();
     }
@@ -619,29 +641,39 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 function animateModal(estagio) {
 
   if (estagio == 'tease') {
+    $('#modal-upper').removeClass('closed').addClass('opened');
+
     $('.modal-content').removeClass('isOpened');
 
-    let subirTanto = $('.modal-wrapper .header').outerHeight();
+    let subirTanto = $('.header').outerHeight()+$('.eventos').outerHeight()+$('.adicionar').outerHeight();
 
     let stageHeight = $(document).outerHeight();
 
     let porcentSobe = (100*subirTanto)/stageHeight;
 
-    $('.modal-content').transition({y: -(porcentSobe*1.9)+'%'}, 300, 'easeOutCubic');
+    $('.modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
     $('.modal-image').transition({zIndex: 2}, 0, 'easeOutCubic', function(){
-      $('.modal-image').transition({x: '42vw', y: '-24vh', scale: 2}, 700, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', scale: 2}, 700, 'easeOutCubic');
     });
     $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
 
   } else if (estagio == 'open') {
 
+    $('#modal-upper').removeClass('opened').addClass('closed');
+
+    let subirTanto = $('.modal-wrapper').outerHeight();
+
+    let stageHeight = $(document).outerHeight();
+
+    let porcentSobe = (100*subirTanto)/stageHeight;
+
     if ($('.modal-content').hasClass('isOpened')) {
       return;
     } else {
-      $('.modal-content').transition({y: '-80vh'}, 500, 'easeOutCubic').addClass('isOpened');
-      $('.modal-image').transition({x: '42vw', y: '-85vh', scale: 2}, 500, 'easeOutCubic', function () {
+      $('.modal-content').transition({y: -(porcentSobe+12)+'vh'}, 500, 'easeOutCubic').addClass('isOpened');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+15)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
         $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-          $('.modal-image').transition({x: '42vw', y: '-78vh', scale: 2}, 600, 'easeOutCubic');
+          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+9)+'vh', scale: 2}, 600, 'easeOutCubic');
         })
       });
 

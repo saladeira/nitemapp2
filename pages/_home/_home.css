@@ -125,11 +125,30 @@
 
 .modal-wrapper .content {
   overflow: hidden;
-  padding: 1.7rem 1.2rem 0rem 1.2rem;
+  padding: 1rem 1.2rem 1rem 1.2rem;
+  border-bottom: 1px solid #ececec;
 }
 
-.modal-wrapper .header {
-  /* background-color: #F7F0F0; */
+.modal-wrapper .content:first-child {
+  overflow: hidden;
+  padding: 1.5rem 1.2rem 1rem 1.2rem;
+}
+
+.modal-wrapper .content:last-child {
+  overflow: hidden;
+  padding: 1rem 1.2rem 2rem 1.2rem;
+  border-bottom: 0;
+}
+
+.modal-wrapper .eventos .info h2 {
+  color: #e61367;
+  font-size: 1.1rem;
+  line-height: 1.2rem;
+  font-weight: 200;
+  padding-bottom: 0.1rem;
+}
+
+.modal-wrapper .header, .modal-wrapper .adicionar {
   text-align: center;
 }
 
@@ -141,32 +160,78 @@
   padding-bottom: 0.1rem;
 }
 
-.modal-wrapper .header p.local-endereco {
+.modal-wrapper .header p {
   color: #a4a4a4;
   font-size: 0.74rem;
   letter-spacing: 0.04rem;
   font-weight: 300;
 }
 
-.header .botoes {
-  padding-top: 1rem;
+.modal-wrapper .eventos {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
 }
 
-.header .botoes .botao {
+.modal-wrapper .eventos h1 {
+  color: #2f323a;
+  font-size: 0.9rem;
+  line-height: 0.9rem;
+  font-weight: 200;
+  padding-bottom: 0.1rem;
+  width: 100%;
+}
+
+.modal-wrapper .eventos .evento-info{
+  padding: 0 0.8rem;
+}
+
+.modal-wrapper .eventos .evento-info p.evento-titulo {
+  color: #2f323a;
+  font-size: 1rem;
+  letter-spacing: 0rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.modal-wrapper .eventos .evento-img img{
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.modal-wrapper .eventos .evento-info p.evento-hora {
+  color: #a4a4a4;
+  font-size: 0.74rem;
+  padding-bottom: 0.2rem;
+  font-weight: 300;
+}
+
+.modal-wrapper .eventos .evento-info p.evento-descri {
+  color: #2f323a;
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+.adicionar .botoes {
+  /* padding-top: 1rem; */
+}
+
+.adicionar .botoes .botao {
   display: inline-block;
   margin-right: 2rem;
 }
 
-.header .botoes .botao p {
+.adicionar .botoes .botao p {
   color: #2f323a !important;
   font-size: 0.8rem !important;
 }
 
-.header .botoes .botao:last-child {
+.adicionar .botoes .botao:last-child {
   margin-right: 0rem;
 }
 
-.header .botoes .botao i {
+.adicionar .botoes .botao i {
   padding-right: 0.1rem;
 }
 
@@ -192,11 +257,13 @@
 
 .badge-item .badge-legenda {
   color: #2f323a;
+  position: relative;
+  top: 0;
+  left: 0;
   font-size: 0.7rem;
   font-weight: 600;
   width: 100%;
   display: block;
-  word-wrap: break-word;
 }
 
 .badge-item p.badge-image {
