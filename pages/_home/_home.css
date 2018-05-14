@@ -59,7 +59,7 @@
   top: -50%;
 }
 
-.modal-content {
+#modal-content {
   position: relative;
   width: 100%;
   background-color: #fbfbff;
@@ -134,12 +134,6 @@
   padding: 1.5rem 1.2rem 1rem 1.2rem;
 }
 
-.modal-wrapper .content:last-child {
-  overflow: hidden;
-  padding: 1rem 1.2rem 2rem 1.2rem;
-  border-bottom: 0;
-}
-
 .modal-wrapper .eventos .info h2 {
   color: #e61367;
   font-size: 1.1rem;
@@ -156,8 +150,8 @@
   color: #e61367;
   font-size: 1.1rem;
   line-height: 1.2rem;
-  font-weight: 200;
-  padding-bottom: 0.1rem;
+  font-weight: 400;
+  padding-bottom: 0.4rem;
 }
 
 .modal-wrapper .header p {

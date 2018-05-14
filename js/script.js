@@ -3,6 +3,8 @@
 //metodo pra carregamento de conteudo das parciais
 var pageLoaded = null;
 
+var markerTipo;
+
 var map, idWatch, markerUser, markerPlace, accRadius, autocomplete;
 
 var markersUser = [];
@@ -422,7 +424,7 @@ function initMap(pos) {
 //Fechar info do clique
 function fechaInfo() {
   console.log('fecha info');
-  animateModal('close')
+  modalClose();
 }
 
 //abre Modal da parte de baixo e insere o view dependendo do marcador
@@ -440,11 +442,13 @@ function abrirInfo(marcador, latLng) {
 
         $('p.local-endereco').html(endereco);
 
-        $('h1.local-titulo').html('Você está aqui! ;)')
+        $('h1.local-titulo').html('Você está aqui! ;P')
 
-        $('.modal-wrapper .eventos').hide();
+        $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
 
-        animateModal('tease');
+        $('#modal-content').addClass('stop');
+
+        modalTease();
 
       } else {
         alert(status)
@@ -455,9 +459,13 @@ function abrirInfo(marcador, latLng) {
   }
 
   if (marcador == 'search') {
-    fecharModal = true;
+    $('p.local-endereco').html('Endereco da busca');
 
-    animateModal('tease');
+    $('h1.local-titulo').html('Resultado da busca')
+
+    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'flex'});
+
+    modalTease();
   }
 
   console.log(marcador)
@@ -593,6 +601,7 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
   google.maps.event.addListener(marker, 'click', (function(marker, markerId, markerTipo) {
     return function(event) {
+      markerTipo = marker.marcador
       abrirInfo(marker.marcador, marker.position)
       //openInfo(marker.position, ($(window).height()/2)-toPanX, ($(window).width()/2)-toPanY, marker.marcador);
       //addListeners();
@@ -637,59 +646,59 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 };//fim do add Marker
 
 
+//Primeiro estagio do modal
+function modalTease () {
 
-function animateModal(estagio) {
+  let divHeight = $('.amostra').outerHeight();
+  let stageHeight = $(document).outerHeight();
+  let porcentSobe = (divHeight*100)/stageHeight;
 
-  if (estagio == 'tease') {
-    $('#modal-upper').removeClass('closed').addClass('opened');
+  $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+  $('.modal-image').transition({zIndex: 2}, 0, 'easeOutCubic', function(){
+    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', scale: 2}, 700, 'easeOutCubic');
+  });
+  $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
 
-    $('.modal-content').removeClass('isOpened');
-
-    let subirTanto = $('.header').outerHeight()+$('.eventos').outerHeight()+$('.adicionar').outerHeight();
-
-    let stageHeight = $(document).outerHeight();
-
-    let porcentSobe = (100*subirTanto)/stageHeight;
-
-    $('.modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-    $('.modal-image').transition({zIndex: 2}, 0, 'easeOutCubic', function(){
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', scale: 2}, 700, 'easeOutCubic');
-    });
-    $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-
-  } else if (estagio == 'open') {
-
-    $('#modal-upper').removeClass('opened').addClass('closed');
-
-    let subirTanto = $('.modal-wrapper').outerHeight();
-
-    let stageHeight = $(document).outerHeight();
-
-    let porcentSobe = (100*subirTanto)/stageHeight;
-
-    if ($('.modal-content').hasClass('isOpened')) {
-      return;
-    } else {
-      $('.modal-content').transition({y: -(porcentSobe+12)+'vh'}, 500, 'easeOutCubic').addClass('isOpened');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+15)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+9)+'vh', scale: 2}, 600, 'easeOutCubic');
-        })
-      });
-
-      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-    }
-
-  } else if (estagio == 'close') {
-
-    $('.modal-content').removeClass('isOpened');
-    $('.modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-    $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
-
-
+  if ($('#modal-content').hasClass('stop')) {
+    console.log('para')
+  } else {
+    $('#modal-content').removeAttr('class').addClass('tease');
   }
-}
 
+
+};
+
+//Modal totalmente aberto
+function modalFull () {
+
+  let divHeight = $('.modal-wrapper').outerHeight();
+  let stageHeight = $(document).outerHeight();
+  let porcentSobe = (divHeight*100)/stageHeight;
+
+  if ($('#modal-content').hasClass('full')) {
+    console.log('aberto');
+  } else if ($('#modal-content').hasClass('stop')) {
+    console.log('para');
+  } else {
+    $('#modal-content').transition({y: -(porcentSobe+12)+'vh'}, 500, 'easeOutCubic').addClass('full');
+    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+15)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
+      $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+9)+'vh', scale: 2}, 600, 'easeOutCubic');
+      })
+    });
+
+    $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
+  }
+
+};
+
+//Fecha o modal
+function modalClose () {
+  $('#modal-content').removeAttr('class');
+
+  $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+  $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
+};
 
 
 //ESTILO DO MAPA - não colocar nada ABAIXO//estilo do mapa - NAO COLOCAR NADA ABAIXO

@@ -20,28 +20,14 @@ $('#_home').css({
 
 
 //Estudar melhor e usar um drag swipe
-
-var fecharModal;
-
 $('#modal-bottom').swipe( {
     //Generic swipe handler for all directions
     swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
-
+      var estado;
       if (direction == 'up') {
-        animateModal('open')
-
-        fecharModal = false;
+        modalFull();
       } else if (direction == 'down') {
-        if (!fecharModal) {
-          animateModal('tease')
-
-          fecharModal = true;
-        } else {
-          animateModal('close')
-
-          fecharModal = false;
-        }
-
+        modalTease();
       }
 
     },
