@@ -435,10 +435,7 @@ function abrirInfo(marcador, latLng) {
 
     reverseGeocode(latLng, function(status, res) {
       if (status == 'ok') {
-        let endereco = res[0].address_components[1].short_name + ', ';
-        endereco += res[0].address_components[0].short_name + ' - ';
-        endereco += res[0].address_components[3].short_name + '/';
-        endereco += res[0].address_components[5].short_name;
+        let endereco = res[0].formatted_address;
 
         $('p.local-endereco').html(endereco);
 
@@ -446,9 +443,9 @@ function abrirInfo(marcador, latLng) {
 
         $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
 
-        $('#modal-content').addClass('stop');
+        $('#modal-content').removeAttr('class').addClass('stop');
 
-        modalTease();
+        modalAnimate('tease', 'up');
 
       } else {
         alert(status)
@@ -459,13 +456,19 @@ function abrirInfo(marcador, latLng) {
   }
 
   if (marcador == 'search') {
-    $('p.local-endereco').html('Endereco da busca');
+    console.log(searchResults)
+
+    let endereco = searchResults.formatted_address;
+
+    $('p.local-endereco').html(endereco);
 
     $('h1.local-titulo').html('Resultado da busca')
 
-    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'flex'});
+    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
 
-    modalTease();
+    $('#modal-content').removeAttr('class').addClass('stop');
+
+    modalAnimate('tease', 'up');
   }
 
   console.log(marcador)
@@ -645,61 +648,95 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
 };//fim do add Marker
 
+function modalAnimate (position, vetor) {
 
-//Primeiro estagio do modal
-function modalTease () {
+  let modal = $('#modal-content');
 
-  let divHeight = $('.amostra').outerHeight();
   let stageHeight = $(document).outerHeight();
-  let porcentSobe = (divHeight*100)/stageHeight;
 
-  $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-  $('.modal-image').transition({zIndex: 2}, 0, 'easeOutCubic', function(){
-    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', scale: 2}, 700, 'easeOutCubic');
-  });
-  $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+  if (vetor == 'up') {
+    if (modal.hasClass('close')) {
 
-  if ($('#modal-content').hasClass('stop')) {
-    console.log('para')
-  } else {
-    $('#modal-content').removeAttr('class').addClass('tease');
-  }
+      let divHeight = $('.amostra').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
+        modal.removeAttr('class').addClass(position);
+      });
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+
+    } //fim do close up
+
+    else if (modal.hasClass('tease')) {
+
+      let divHeight = $('.modal-wrapper').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-upper').removeClass('opened').addClass('closed');
+      $('#modal-content').transition({y: -(porcentSobe+13.3)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
+        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 600, 'easeOutCubic');
+          modal.removeAttr('class').addClass(position);
+        })
+      });
+
+      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
+
+    } //fim do tease up
+
+    else if (modal.hasClass('stop')) {
+
+      let divHeight = $('.amostra').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
+        modal.removeAttr('class').addClass('stop');
+      });
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+
+    };//fim do stop up
+  };//fim do vetor up
+
+  if (vetor == 'down') {
+    if (modal.hasClass('stop')) {
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic', function () {
+        modal.removeAttr('class').addClass(position);
+      });
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
+
+    } //fim do stop down
+
+    else if (modal.hasClass('tease')) {
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic', function () {
+        modal.removeAttr('class').addClass(position);
+      });
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
+
+    } //fim do tease down
+
+    else if (modal.hasClass('full')) {
+
+      $('#modal-upper').removeClass('closed').addClass('opened');
+
+      let divHeight = $('.amostra').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
+        modal.removeAttr('class').addClass(position);
+      });
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+
+    }; //fim do full down
+  };//fim do vetor up
 
 
-};
-
-//Modal totalmente aberto
-function modalFull () {
-
-  let divHeight = $('.modal-wrapper').outerHeight();
-  let stageHeight = $(document).outerHeight();
-  let porcentSobe = (divHeight*100)/stageHeight;
-
-  if ($('#modal-content').hasClass('full')) {
-    console.log('aberto');
-  } else if ($('#modal-content').hasClass('stop')) {
-    console.log('para');
-  } else {
-    $('#modal-content').transition({y: -(porcentSobe+12)+'vh'}, 500, 'easeOutCubic').addClass('full');
-    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+15)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-      $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+9)+'vh', scale: 2}, 600, 'easeOutCubic');
-      })
-    });
-
-    $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-  }
-
-};
-
-//Fecha o modal
-function modalClose () {
-  $('#modal-content').removeAttr('class');
-
-  $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-  $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
-};
-
+};//fim do modal animate
 
 //ESTILO DO MAPA - não colocar nada ABAIXO//estilo do mapa - NAO COLOCAR NADA ABAIXO
 var estilo = [

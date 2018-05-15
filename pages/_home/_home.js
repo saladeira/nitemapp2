@@ -25,9 +25,15 @@ $('#modal-bottom').swipe( {
     swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
       var estado;
       if (direction == 'up') {
-        modalFull();
+        modalAnimate('full', direction);
       } else if (direction == 'down') {
-        modalTease();
+        if ($('#modal-content').hasClass('tease')) {
+          modalAnimate('close', direction);
+        } else if ($('#modal-content').hasClass('stop')){
+          modalAnimate('close', direction);
+        } else if ($('#modal-content').hasClass('full')) {
+          modalAnimate('tease', direction);
+        }
       }
 
     },
