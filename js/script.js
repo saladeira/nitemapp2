@@ -23,6 +23,8 @@ var filtroRaio = 100;
 
 var markerUserLoaded = false;
 
+var meuMarcadorClicado;
+
 function loadView(tag, url, transition, callback) {
     if (url == '') {
       $(tag).html('');
@@ -334,7 +336,7 @@ function setMapOnAll(map, tipo) {
 //executa a busca por endereço
 function codeAddress() {
 
-  fechaInfo();
+  modalAnimate('close', 'down');
 
   searchAddress = document.getElementById('search-address').value;
 
@@ -397,11 +399,11 @@ function initMap(pos) {
   addMarker(posInit, userIcon, '', 'user', false, true, '');
   markerUserLoaded = true;
   //
-  // getRegistered(800);
+  getRegistered(800);
   //
-  // map.addListener('dragend', function () {
-  //   getRegistered(800)
-  // })
+  map.addListener('dragend', function () {
+    getRegistered(800)
+  })
 
   accRadius = new google.maps.Circle({
     strokeColor: '#FFFFFF',
@@ -416,63 +418,10 @@ function initMap(pos) {
   });
 
   google.maps.event.addListener(map, 'click', function (event) {
-    fechaInfo()
+    modalAnimate('close', 'down');
   });
 
 }; // fim do init map
-
-//Fechar info do clique
-function fechaInfo() {
-  console.log('fecha info');
-  modalClose();
-}
-
-//abre Modal da parte de baixo e insere o view dependendo do marcador
-function abrirInfo(marcador, latLng) {
-
-  if (marcador == 'user') {
-    fecharModal = true;
-
-    reverseGeocode(latLng, function(status, res) {
-      if (status == 'ok') {
-        let endereco = res[0].formatted_address;
-
-        $('p.local-endereco').html(endereco);
-
-        $('h1.local-titulo').html('Você está aqui! ;P')
-
-        $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
-
-        $('#modal-content').removeAttr('class').addClass('stop');
-
-        modalAnimate('tease', 'up');
-
-      } else {
-        alert(status)
-      }
-    });
-
-
-  }
-
-  if (marcador == 'search') {
-    console.log(searchResults)
-
-    let endereco = searchResults.formatted_address;
-
-    $('p.local-endereco').html(endereco);
-
-    $('h1.local-titulo').html('Resultado da busca')
-
-    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
-
-    $('#modal-content').removeAttr('class').addClass('stop');
-
-    modalAnimate('tease', 'up');
-  }
-
-  console.log(marcador)
-}
 
 //Cria ID randomico e grande
 var criaID = function () {
@@ -604,10 +553,9 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
   google.maps.event.addListener(marker, 'click', (function(marker, markerId, markerTipo) {
     return function(event) {
-      markerTipo = marker.marcador
+      meuMarcadorClicado = marker;
+      markerTipo = marker.marcador;
       abrirInfo(marker.marcador, marker.position)
-      //openInfo(marker.position, ($(window).height()/2)-toPanX, ($(window).width()/2)-toPanY, marker.marcador);
-      //addListeners();
     }
   })(marker, markerId, markerTipo));
 
@@ -647,6 +595,159 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
   }
 
 };//fim do add Marker
+
+//registra um novo lugar (chamada ajax para php)
+
+function registrarLocal(data) {
+
+  console.log(meuMarcadorClicado)
+  console.log(data)
+
+  $.ajax({
+      type: 'POST',
+      url: 'https://www.esbrubles.com.br/nitemapp/placereg2.php',
+      data: data,
+      cache: false,
+      beforeSend: function() {
+        // modalAnimate('close', 'down');
+        $('.spinner2').removeClass('hide');
+        $('.form').prop( "disabled", true );
+      },
+      success:  function(jqXHR, data, response) {
+        //var resposta = response.responseText;
+        console.log(response)
+        if (meuMarcadorClicado.marcador == 'user') {
+          addMarker(meuMarcadorClicado.position, registeredIcon, '', 'registrado', false, true, '')
+        } else {
+          meuMarcadorClicado.setOptions({
+            icon: registeredIcon,
+            marcador: 'registrado',
+            draggable: false
+          })
+        }
+        $('.spinner2').addClass('hide');
+      },
+      error: function(jqXHR, response) {
+        console.log(jqXHR, response)
+      }
+   });
+};
+
+//Busca locais já registrados no debug
+function getRegistered(raio, callback) {
+  //resolve o raio baseado na latitude e longitude
+  $.ajax({
+      type: 'GET',
+      url: 'https://www.esbrubles.com.br/nitemapp/get_places_range2.php',
+      data: 'lat=' + map.getCenter().lat() + '&lng=' + map.getCenter().lng() + '&raio=' + raio + '&getRegistered=getRegistered',
+      cache: false,
+      beforeSend: function() {
+        console.log('from getRegistered')
+      },
+      success:  function(jqXHR, data, response) {
+        console.log(response.responseText);
+        console.log(data);
+        if (response.responseText != '') {
+          //var resposta = response.responseText;
+          var JSONString = response.responseText; // Replace ... with your JSON String
+
+          var JSONObject = $.parseJSON(JSONString);
+          //console.log(JSONObject);
+          registeredResults = JSONObject;
+          //console.log(registeredResults);
+
+          if (callback && typeof(callback) === "function") {
+            callback(registeredResults);
+          };
+
+          addPlacesRegistered(registeredResults);
+        } else {
+          $('.loading-all').hide();
+        };
+      },
+      error: function(jqXHR, response) {
+        console.log(jqXHR, response);
+        $('.loading-all').hide();
+      }
+   });
+};
+
+//Adiciona marcadores para os lugares encontrados no DB
+function addPlacesRegistered(obj) {
+  setMapOnAll(null, 'registrado');
+
+  for (let i = 0; i < obj.length; i++) {
+    console.log(obj[i]);
+
+    var pos = {
+      lat: parseFloat(obj[i].place_lat),
+      lng: parseFloat(obj[i].place_lng)
+    }
+
+    console.log(pos)
+
+    addMarker(pos, registeredIcon, obj[i].place_nome, 'registrado', false, true, i)
+  };
+
+};
+
+//Remove marcadores
+function setMapOnAll(map, tipo) {
+  for (var i = 0; i < markers.length; i++) {
+    if (markers[i].marcador == tipo || tipo == 'todos') {
+      markers[i].setMap(map);
+    }
+  }
+};
+
+//abre Modal da parte de baixo e insere o view dependendo do marcador
+function abrirInfo(marcador, latLng) {
+
+  if (marcador == 'user') {
+
+    reverseGeocode(latLng, function(status, res) {
+      if (status == 'ok') {
+        let endereco = res[0].formatted_address;
+
+        $('p.local-endereco').html(endereco);
+
+        $('h1.local-titulo').html('Você está aqui! ;P')
+
+        $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
+
+        $('#modal-content').removeAttr('class').addClass('stop');
+
+        $('.modal-image img').attr('src', 'imgs/icons/014-placeholder.svg');
+
+        modalAnimate('tease', 'up');
+
+      } else {
+        alert(status)
+      }
+    });
+
+
+  }
+
+  if (marcador == 'search') {
+
+    let endereco = searchResults.formatted_address;
+
+    $('p.local-endereco').html(endereco);
+
+    $('h1.local-titulo').html('Resultado da busca')
+
+    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
+
+    $('#modal-content').removeAttr('class').addClass('stop');
+
+    $('.modal-image img').attr('src', 'imgs/icons/025-treasure-map.svg');
+
+    modalAnimate('tease', 'up');
+  }
+
+  console.log(marcador)
+};
 
 function modalAnimate (position, vetor) {
 

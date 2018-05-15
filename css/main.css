@@ -46,7 +46,7 @@ p, span {
   padding: 0px;
 }
 
-textarea, input, button {
+textarea, input, button, select {
   background-color: transparent;
   margin: 0px;
 }
@@ -72,6 +72,7 @@ input, button, textarea, select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  resize: none;
 }
 
 .fundo-animado {

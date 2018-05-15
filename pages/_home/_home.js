@@ -21,22 +21,48 @@ $('#_home').css({
 
 //Estudar melhor e usar um drag swipe
 $('#modal-bottom').swipe( {
-    //Generic swipe handler for all directions
-    swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
-      var estado;
-      if (direction == 'up') {
-        modalAnimate('full', direction);
-      } else if (direction == 'down') {
-        if ($('#modal-content').hasClass('tease')) {
-          modalAnimate('close', direction);
-        } else if ($('#modal-content').hasClass('stop')){
-          modalAnimate('close', direction);
-        } else if ($('#modal-content').hasClass('full')) {
-          modalAnimate('tease', direction);
-        }
+  //Generic swipe handler for all directions
+  swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
+    var estado;
+    if (direction == 'up') {
+      modalAnimate('full', direction);
+    } else if (direction == 'down') {
+      if ($('#modal-content').hasClass('tease')) {
+        modalAnimate('close', direction);
+      } else if ($('#modal-content').hasClass('stop')){
+        modalAnimate('close', direction);
+      } else if ($('#modal-content').hasClass('full')) {
+        modalAnimate('tease', direction);
       }
+    }
 
-    },
-    threshold:50,
-    fingers:'all'
-  });
+  },
+  threshold:50,
+  fingers:'all'
+});
+
+$('.auxiliar').on('click', function () {
+  let clicado = $(this).attr('data-target');
+  console.log(clicado);
+
+  $('.auxiliar').each(function () {
+    $(this).find('p').removeClass('aux-ativo')
+  })
+
+  $(this).find('p').addClass('aux-ativo')
+
+  $('.'+clicado).css({display: 'block'});
+
+  modalAnimate('tease','up');
+
+  if (clicado == 'add-local') {
+    $('#novoEnd').val($('.local-endereco').html());
+    console.log(map.position)
+  }
+
+  if (clicado == 'add-registro') {
+    registrarLocal($('.form').serialize())
+  }
+
+  //
+})

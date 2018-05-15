@@ -16,7 +16,7 @@
   <div id="modal-bottom" class="modal bottom closed">
 
     <p class="modal-image">
-      <img src="imgs/icons/030-torch.svg">
+      <img src="imgs/icons/025-treasure-map.svg">
     </p>
 
 
@@ -27,8 +27,8 @@
 
         <div class="amostra">
           <div class="content header">
-            <h1 class="local-titulo">Lorem ipsum - Dolor sit amet</h1>
-            <p class="local-endereco">Rua Whatever, 523 - São Paulo/SP</p>
+            <h1 class="local-titulo"></h1>
+            <p class="local-endereco"></p>
           </div>
 
           <div class="content eventos">
@@ -55,7 +55,72 @@
                 <p><i class="fas fa-calendar-alt"></i> Adicionar Evento</p>
               </div>
             </div>
+          </div> <!-- fim do content adicionar -->
+
+          <div class="content add-local">
+
+            <form class="form">
+
+              <div class="first">
+
+                <div class="input-holder small">
+                  <input id="novoNome" type="text" name="novoNome" placeholder="Nome do local">
+                </div>
+
+                <!-- <div class="input-holder small">
+                  <textarea id="novoDesc" type="text" name="novoDesc" placeholder="Descrição"></textarea>
+                </div> -->
+
+                <!-- <div class="input-holder small">
+                  <input id="novoEnd" type="text" name="novoEnd" placeholder="Endereço">
+                </div> -->
+
+                <!-- <div class="input-holder small">
+                  <input id="novoAberto" type="text" name="novoAberto" placeholder="Horário de funcionamento">
+                </div> -->
+
+                <div class="input-holder small">
+                  <select id="novoTipo" name="novoTipo">
+                    <option value="" disabled selected>Tipo de estabelecimento</option>
+                    <option>Bar</option>
+                    <option>Lanchonete</option>
+                    <option>Pub</option>
+                    <option>Casa de shows</option>
+                    <option>Casa de eventos</option>
+                  </select>
+                </div>
+
+                <div class="input-holder small">
+                  <select id="novoPublico" name="novoPublico">
+                    <option selected>Apenas para convidados</option>
+                    <option>Aberto ao público</option>
+                  </select>
+                </div>
+
+                <input id="novoLat" type="hidden" name="novoLat" value="">
+                <input id="novoLng" type="hidden" name="novoLng" value="">
+                <input id="novoRegistrado" type="hidden" name="novoRegistrado" value="sim">
+                <input id="userID" type="hidden" name="userID" value="">
+                <input id="novoEnd" type="hidden" name="novoEnd" value="">
+
+                <div class="botoes">
+                  <div class="botao auxiliar bregistrar right" data-target="add-registro">
+                    <p>Registrar local <i class="fas fa-caret-right"></i></p>
+                  </div>
+                </div>
+
+              </div> <!-- fim do first -->
+
+            </form><!-- fim do form -->
+
+            <div class="spinner2 hide">
+              <div class="bounce1"></div>
+              <div class="bounce2"></div>
+              <div class="bounce3"></div>
+            </div>
+
           </div>
+
         </div>
 
         <div class="content descript">
