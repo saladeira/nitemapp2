@@ -5,7 +5,7 @@
  if($_POST['userID']) {
 
    if ($_POST['fbID'] == '') {
-     $fbID = mt_rand(8,60);
+     $fbID = mt_rand(60);
    } else {
      $fbID = $_POST['fbID'];
    }

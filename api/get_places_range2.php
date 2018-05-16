@@ -26,7 +26,7 @@
 
       while ($row = $sql->fetchAll(PDO::FETCH_ASSOC)) {
         print_r(json_encode($row));
-        echo $row;
+        // echo $row;
       }
 
 

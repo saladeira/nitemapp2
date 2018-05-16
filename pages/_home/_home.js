@@ -57,7 +57,10 @@ $('.auxiliar').on('click', function () {
 
   if (clicado == 'add-local') {
     $('#novoEnd').val($('.local-endereco').html());
-    console.log(map.position)
+    $('#novoLat').val(meuMarcadorClicado.position.lat());
+    $('#novoLng').val(meuMarcadorClicado.position.lng());
+    $('#userID').val(localStorage.getItem('id'));
+    console.log(meuMarcadorClicado.position.lat())
   }
 
   if (clicado == 'add-registro') {

@@ -325,6 +325,10 @@
   /* margin-top: -2px; */
 }
 
+.form:disabled {
+  opacity: 0.5;
+}
+
 .input-holder.fundo {
   border-radius: 2px !important;
   background-color: rgba(251, 251, 255, 0.92);
@@ -352,7 +356,11 @@
   margin-bottom: 0.8rem !important;
 }
 
-.input-holder.small input, .input-holder.small textarea, .input-holder.small select {
+.input-holder.small select option:disabled {
+  color: red !important;
+}
+
+.input-holder.small input, .input-holder.small textarea, .input-holder.small select, .input-holder.small select option {
   border-radius: 0px !important;
   width: 100%;
   color: #181818;
@@ -361,6 +369,7 @@
   font-weight: 300;
   font-family: 'Open Sans', sans-serif !important;
   border-bottom: 1px solid #b2b2b3;
+  letter-spacing: 0rem;
 }
 
 .input-holder.small input::placeholder {

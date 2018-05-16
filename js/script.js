@@ -636,6 +636,7 @@ function registrarLocal(data) {
 //Busca locais já registrados no debug
 function getRegistered(raio, callback) {
   //resolve o raio baseado na latitude e longitude
+
   $.ajax({
       type: 'GET',
       url: 'https://www.esbrubles.com.br/nitemapp/get_places_range2.php',
@@ -645,8 +646,6 @@ function getRegistered(raio, callback) {
         console.log('from getRegistered')
       },
       success:  function(jqXHR, data, response) {
-        console.log(response.responseText);
-        console.log(data);
         if (response.responseText != '') {
           //var resposta = response.responseText;
           var JSONString = response.responseText; // Replace ... with your JSON String
@@ -662,7 +661,7 @@ function getRegistered(raio, callback) {
 
           addPlacesRegistered(registeredResults);
         } else {
-          $('.loading-all').hide();
+          console.log('ue')
         };
       },
       error: function(jqXHR, response) {
