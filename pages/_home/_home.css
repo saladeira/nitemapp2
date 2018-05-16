@@ -19,6 +19,19 @@
   box-sizing: border-box;
 }
 
+.loading-all {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 .modal {
   width: 100%;
 
@@ -381,6 +394,10 @@
 
 .input-holder.small input:focus, .input-holder.small textarea:focus, .input-holder.small select:focus {
   border-bottom: 1px solid #2f323a !important;
+}
+
+.input-holder.small .alert {
+  border-bottom: 1px solid #EF626C !important;
 }
 
 .aux-ativo {

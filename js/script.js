@@ -343,14 +343,15 @@ function codeAddress() {
   geocoder.geocode( { 'address': searchAddress}, function(results, status) {
 
     if (status == 'OK') {
-      setMapOnAll(null, 'search'); //remove todos os marcadores do tipo search antes de mostrar os novos
+      setMapOnAll(null, 'search');
+      setMapOnAll(null, 'registrado'); //remove todos os marcadores do tipo search antes de mostrar os novos
       searchResults = results[0];
 
       map.panTo(results[0].geometry.location);
 
       addMarker(results[0].geometry.location, searchIcon, '', 'search', true, false, '');
 
-      //getRegistered(800);
+      getRegistered(800);
 
     } else {
       alert('Geocode was not successful for the following reason: ' + status);
@@ -398,12 +399,9 @@ function initMap(pos) {
 
   addMarker(posInit, userIcon, '', 'user', false, true, '');
   markerUserLoaded = true;
-  //
+
   getRegistered(800);
-  //
-  map.addListener('dragend', function () {
-    getRegistered(800)
-  })
+
 
   accRadius = new google.maps.Circle({
     strokeColor: '#FFFFFF',
@@ -643,9 +641,11 @@ function getRegistered(raio, callback) {
       data: 'lat=' + map.getCenter().lat() + '&lng=' + map.getCenter().lng() + '&raio=' + raio + '&getRegistered=getRegistered',
       cache: false,
       beforeSend: function() {
-        console.log('from getRegistered')
+        $('.loading-all').removeClass('hide');
       },
       success:  function(jqXHR, data, response) {
+        $('.loading-all').addClass('hide');
+
         if (response.responseText != '') {
           //var resposta = response.responseText;
           var JSONString = response.responseText; // Replace ... with your JSON String
@@ -661,12 +661,12 @@ function getRegistered(raio, callback) {
 
           addPlacesRegistered(registeredResults);
         } else {
-          console.log('ue')
+          console.log('Sem locais na região')
         };
       },
       error: function(jqXHR, response) {
         console.log(jqXHR, response);
-        $('.loading-all').hide();
+        $('.loading-all').addClass('hide');
       }
    });
 };

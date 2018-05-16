@@ -64,7 +64,14 @@ $('.auxiliar').on('click', function () {
   }
 
   if (clicado == 'add-registro') {
-    registrarLocal($('.form').serialize())
+
+    if ($('#novoNome').val() == '') {
+      $('#novoNome').addClass('alert');
+    } else if ($('#novoTipo').val() == '') {
+      $('#novoTipo').addClass('alert');
+    } else {
+      registrarLocal($('.form').serialize());
+    }
   }
 
   //
