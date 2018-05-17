@@ -613,16 +613,17 @@ function registrarLocal(data) {
       },
       success:  function(jqXHR, data, response) {
         //var resposta = response.responseText;
-        console.log(response)
-        if (meuMarcadorClicado.marcador == 'user') {
-          addMarker(meuMarcadorClicado.position, registeredIcon, '', 'registrado', false, true, '')
-        } else {
-          meuMarcadorClicado.setOptions({
-            icon: registeredIcon,
-            marcador: 'registrado',
-            draggable: false
-          })
-        }
+        console.log(response);
+        getRegistered(800)
+        // if (meuMarcadorClicado.marcador == 'user') {
+        //   addMarker(meuMarcadorClicado.position, registeredIcon, '', 'registrado', false, true, '')
+        // } else {
+        //   meuMarcadorClicado.setOptions({
+        //     icon: registeredIcon,
+        //     marcador: 'registrado',
+        //     draggable: false
+        //   })
+        // }
         $('.spinner2').addClass('hide');
       },
       error: function(jqXHR, response) {
@@ -653,7 +654,7 @@ function getRegistered(raio, callback) {
           var JSONObject = $.parseJSON(JSONString);
           //console.log(JSONObject);
           registeredResults = JSONObject;
-          //console.log(registeredResults);
+          console.log(registeredResults);
 
           if (callback && typeof(callback) === "function") {
             callback(registeredResults);
@@ -676,14 +677,14 @@ function addPlacesRegistered(obj) {
   setMapOnAll(null, 'registrado');
 
   for (let i = 0; i < obj.length; i++) {
-    console.log(obj[i]);
+    //console.log(obj[i]);
 
     var pos = {
       lat: parseFloat(obj[i].place_lat),
       lng: parseFloat(obj[i].place_lng)
     }
 
-    console.log(pos)
+    //console.log(pos)
 
     addMarker(pos, registeredIcon, obj[i].place_nome, 'registrado', false, true, i)
   };
@@ -706,7 +707,19 @@ function abrirInfo(marcador, latLng) {
 
     reverseGeocode(latLng, function(status, res) {
       if (status == 'ok') {
-        let endereco = res[0].formatted_address;
+
+        let myAddress = res[0].address_components
+
+        let endereco;
+
+        if (myAddress[0].types == 'street_number') {
+          endereco = myAddress[1].short_name + ', ';
+          endereco += myAddress[0].short_name + ' - ';
+          endereco += myAddress[3].short_name;
+        } else {
+          endereco = myAddress[0].short_name + ' - ';
+          endereco += myAddress[2].short_name;
+        }
 
         $('p.local-endereco').html(endereco);
 
@@ -730,7 +743,20 @@ function abrirInfo(marcador, latLng) {
 
   if (marcador == 'search') {
 
-    let endereco = searchResults.formatted_address;
+    let myAddress = searchResults.address_components
+
+    console.log(myAddress);
+
+    let endereco;
+
+    if (myAddress[0].types == 'street_number') {
+      endereco = myAddress[1].short_name + ', ';
+      endereco += myAddress[0].short_name + ' - ';
+      endereco += myAddress[3].short_name;
+    } else {
+      endereco = myAddress[0].short_name + ' - ';
+      endereco += myAddress[2].short_name;
+    }
 
     $('p.local-endereco').html(endereco);
 
@@ -741,6 +767,15 @@ function abrirInfo(marcador, latLng) {
     $('#modal-content').removeAttr('class').addClass('stop');
 
     $('.modal-image img').attr('src', 'imgs/icons/025-treasure-map.svg');
+
+    modalAnimate('tease', 'up');
+  }
+
+  if (marcador == 'registrado') {
+
+    let infoPlace = registeredResults[meuMarcadorClicado.index];
+    console.log(infoPlace);
+    $('p.local-endereco').html(infoPlace.place_ende);
 
     modalAnimate('tease', 'up');
   }
