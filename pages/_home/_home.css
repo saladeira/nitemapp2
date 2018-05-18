@@ -228,8 +228,19 @@
   /* padding-top: 1rem; */
 }
 
-.add-local, .add-evento {
-  display: none;
+.formulario {
+  overflow: hidden;
+  max-height: 0;
+
+  -webkit-transition: max-height 0.2s;
+  -moz-transition: max-height 0.2s;
+  -ms-transition: max-height 0.2s;
+  -o-transition: max-height 0.2s;
+  transition: max-height 0.2s;
+}
+
+.max-height {
+  max-height: 500px;
 }
 
 .botoes .botao {
@@ -386,14 +397,19 @@
 }
 
 .input-holder.small input::placeholder {
-  color: #000000 !important;
+  color: #cccccc !important;
   font-size: 0.8rem;
+  opacity: 1;
   font-family: 'Open Sans', sans-serif !important;
   letter-spacing: 0rem;
 }
 
 .input-holder.small input:focus, .input-holder.small textarea:focus, .input-holder.small select:focus {
   border-bottom: 1px solid #2f323a !important;
+}
+
+.input-holder.small select:invalid {
+  color: #cccccc !important;
 }
 
 .input-holder.small .alert {

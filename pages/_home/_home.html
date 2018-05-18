@@ -53,21 +53,19 @@
 
           <div class="content adicionar">
             <div class="botoes">
-              <div class="botao auxiliar blocal" data-target="add-local">
+              <div class="botao auxiliar retorno blocal" data-target="add-local">
                 <p><i class="fas fa-map-marker"></i> Adicionar local</p>
               </div>
 
-              <div class="botao auxiliar bevento" data-target="add-evento">
+              <div class="botao auxiliar retorno bevento" data-target="add-evento">
                 <p><i class="fas fa-calendar-alt"></i> Adicionar Evento</p>
               </div>
             </div>
           </div> <!-- fim do content adicionar -->
 
-          <div class="content add-local">
+          <div class="content add-local formulario">
 
-            <form class="form">
-
-              <div class="first">
+            <form class="form first">
 
                 <div class="input-holder small">
                   <input id="novoNome" type="text" name="novoNome" placeholder="Nome do local">
@@ -86,8 +84,8 @@
                 </div> -->
 
                 <div class="input-holder small">
-                  <select id="novoTipo" name="novoTipo">
-                    <option value="" disabled selected>Tipo de estabelecimento</option>
+                  <select id="novoTipo" name="novoTipo" required>
+                    <option value="" selected>Tipo de estabelecimento</option>
                     <option value="bar">Bar</option>
                     <option value="lanchonete">Lanchonete</option>
                     <option value="pub">Pub</option>
@@ -109,15 +107,13 @@
                 <input id="userID" type="hidden" name="userID" value="">
                 <input id="novoEnd" type="hidden" name="novoEnd" value="">
 
-                <div class="botoes">
-                  <div class="botao auxiliar bregistrar right" data-target="add-registro">
-                    <p>Registrar local <i class="fas fa-caret-right"></i></p>
-                  </div>
-                </div>
-
-              </div> <!-- fim do first -->
-
             </form><!-- fim do form -->
+
+            <div class="botoes">
+              <div class="botao auxiliar bregistrar right" data-target="add-registro">
+                <p>Registrar local <i class="fas fa-caret-right"></i></p>
+              </div>
+            </div>
 
             <div class="spinner2 hide">
               <div class="bounce1"></div>

@@ -336,7 +336,7 @@ function setMapOnAll(map, tipo) {
 //executa a busca por endereço
 function codeAddress() {
 
-  modalAnimate('close', 'down');
+  modalAnimate('close', 'kill');
 
   searchAddress = document.getElementById('search-address').value;
 
@@ -416,7 +416,7 @@ function initMap(pos) {
   });
 
   google.maps.event.addListener(map, 'click', function (event) {
-    modalAnimate('close', 'down');
+    modalAnimate('close', 'kill');
   });
 
 }; // fim do init map
@@ -614,7 +614,8 @@ function registrarLocal(data) {
       success:  function(jqXHR, data, response) {
         //var resposta = response.responseText;
         console.log(response);
-        getRegistered(800)
+        getRegistered(800);
+        modalTrasit();
         // if (meuMarcadorClicado.marcador == 'user') {
         //   addMarker(meuMarcadorClicado.position, registeredIcon, '', 'registrado', false, true, '')
         // } else {
@@ -721,17 +722,11 @@ function abrirInfo(marcador, latLng) {
           endereco += myAddress[2].short_name;
         }
 
-        $('p.local-endereco').html(endereco);
+        let meuEstado = $('#modal-content').attr('class');
 
-        $('h1.local-titulo').html('Você está aqui! ;P')
-
-        $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
-
-        $('#modal-content').removeAttr('class').addClass('stop');
-
-        $('.modal-image img').attr('src', 'imgs/icons/014-placeholder.svg');
-
-        modalAnimate('tease', 'up');
+        modalAnimate('infoBox', '', function () {
+          populateContent(endereco, 'Você está aqui! ;P', 'imgs/icons/014-placeholder.svg', '', '', '');
+        });
 
       } else {
         alert(status)
@@ -758,120 +753,237 @@ function abrirInfo(marcador, latLng) {
       endereco += myAddress[2].short_name;
     }
 
-    $('p.local-endereco').html(endereco);
+    modalAnimate('infoBox', '', function () {
+      populateContent(endereco, 'Resultado da busca', 'imgs/icons/025-treasure-map.svg', '', '', '');
+    });
 
-    $('h1.local-titulo').html('Resultado da busca')
-
-    $('.modal-wrapper .eventos, .modal-wrapper .descript, .modal-wrapper .badges').css({display: 'none'});
-
-    $('#modal-content').removeAttr('class').addClass('stop');
-
-    $('.modal-image img').attr('src', 'imgs/icons/025-treasure-map.svg');
-
-    modalAnimate('tease', 'up');
   }
 
   if (marcador == 'registrado') {
 
     let infoPlace = registeredResults[meuMarcadorClicado.index];
     console.log(infoPlace);
-    $('p.local-endereco').html(infoPlace.place_ende);
 
-    modalAnimate('tease', 'up');
+    modalAnimate('infoBox', '', function () {
+      populateContent(infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons/007-island.svg', 'teste', 'teste', 'teste');
+    });
   }
 
   console.log(marcador)
 };
 
-function modalAnimate (position, vetor) {
+var modalDesc = true;
+var modalBadges = true;
+var modalEventos = true;
+
+
+function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
+
+  if (endereco != '') {
+    $('p.local-endereco').html(endereco);
+  } else {
+    $('p.local-endereco').html('Sem endereço');
+  }
+
+  if (titulo != '') {
+    $('h1.local-titulo').html(titulo)
+  } else {
+    $('h1.local-titulo').html('Ué, nada aqui...')
+  }
+
+  if (imgsrc != '') {
+    $('.modal-image img').attr('src', imgsrc);
+  } else {
+    $('.modal-image img').attr('src', 'imgs/icons/015-skull-and-bones.svg');
+  }
+
+  if (descricao != '') {
+    console.log('tem descricao');
+    modalDesc = true;
+    $('.modal-wrapper .descript').css({display: 'flex'});
+  } else {
+    modalDesc = false;
+    $('.modal-wrapper .descript').css({display: 'none'});
+  }
+
+  if (evento != '') {
+    console.log('tem evento');
+    modalEventos = true;
+    $('.modal-wrapper .eventos').css({display: 'flex'});
+  } else {
+    modalEventos = false;
+    $('.modal-wrapper .eventos').css({display: 'none'});
+  }
+
+  if (badges != '') {
+    console.log('tem badges');
+    modalBadges = true;
+    $('.modal-wrapper .badges').css({display: 'flex'});
+  } else {
+    modalBadges = false;
+    $('.modal-wrapper .badges').css({display: 'none'});
+  }
+
+}
+
+function modalAnimate(position, vetor, callback) {
+
+  console.log(meuMarcadorClicado)
 
   let modal = $('#modal-content');
 
   let stageHeight = $(document).outerHeight();
 
-  if (vetor == 'up') {
+  $('#modal-upper').removeClass('closed').addClass('opened');
+
+  if (position == 'close') {
+    if (vetor == 'up') {
+      modal.removeAttr('class').addClass('tease');
+      let divHeight = $('.amostra').outerHeight();
+      console.log(divHeight);
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+    }//fim do close up
+
+    else if (vetor == 'down') {
+      $('#modal-upper').toggleClass('closed');
+      modal.removeAttr('class').addClass('close');
+    }//fim do close down
+
+    else if (vetor == 'kill') {
+      modal.removeAttr('class').addClass('close');
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
+    };//fim do kill
+
+  };//fim do close
+
+  if (position == 'tease') {
+    if (vetor == 'up') {
+
+      if (!modalDesc && !modalBadges && !modalEventos) {
+        modal.removeAttr('class').addClass('tease');
+      } else {
+        modal.removeAttr('class').addClass('full');
+
+        let divHeight = $('.modal-wrapper').outerHeight();
+        let porcentSobe = (divHeight*100)/stageHeight;
+
+        $('#modal-upper').removeClass('opened').addClass('closed');
+        $('#modal-content').transition({y: -(porcentSobe+13.3)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
+        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
+          $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+            $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 700, 'easeOutCubic');
+          })
+        });
+
+        $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
+      }
+
+    }//fim do tease up
+
+    else if (vetor == 'down') {
+      modal.removeAttr('class').addClass('close');
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 200, 'easeInOutCubic');
+    }//fim do tease down
+
+    else if (vetor == 'kill') {
+      modal.removeAttr('class').addClass('close');
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
+    };//fim do kill
+
+  };//fim do tease
+
+  if (position == 'full') {
+    if (vetor == 'up') {
+      modal.removeAttr('class').addClass('full');
+    }//fim do full up
+
+    else if (vetor == 'down') {
+      modal.removeAttr('class').addClass('tease');
+      let divHeight = $('.amostra').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+    }//fim do full down
+
+    else if (vetor == 'kill') {
+      modal.removeAttr('class').addClass('close');
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
+    };//fim do full kill
+
+  };//fim do full
+
+  if (position == 'infoBox') {
     if (modal.hasClass('close')) {
 
-      let divHeight = $('.amostra').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
+      if (callback && typeof(callback) === "function") {
+        callback();
+        modal.removeAttr('class').addClass('tease');
+        let divHeight = $('.amostra').outerHeight();
+        console.log(divHeight);
+        let porcentSobe = (divHeight*100)/stageHeight;
 
-      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
-        modal.removeAttr('class').addClass(position);
+        $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+        $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+      };
+
+    } else {
+      modal.removeAttr('class').addClass('tease');
+
+      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
+      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic', function () {
+        if (callback && typeof(callback) === "function") {
+          callback();
+          modal.removeAttr('class').addClass('tease');
+          let divHeight = $('.amostra').outerHeight();
+          let porcentSobe = (divHeight*100)/stageHeight;
+
+          $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+          $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+        };
       });
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+    }
+  };//fim do Infobox
 
-    } //fim do close up
+  if (position == 'reload') {
+    console.log('reload');
 
-    else if (modal.hasClass('tease')) {
+    modal.removeAttr('class').addClass('tease');
+    let divHeight = $('.amostra').outerHeight();
+    let porcentSobe = (divHeight*100)/stageHeight;
 
-      let divHeight = $('.modal-wrapper').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
+    $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
+    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+    $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+  }
+}
 
-      $('#modal-upper').removeClass('opened').addClass('closed');
-      $('#modal-content').transition({y: -(porcentSobe+13.3)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 600, 'easeOutCubic');
-          modal.removeAttr('class').addClass(position);
-        })
-      });
+function modalTrasit() {
 
-      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-
-    } //fim do tease up
-
-    else if (modal.hasClass('stop')) {
-
-      let divHeight = $('.amostra').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
-        modal.removeAttr('class').addClass('stop');
-      });
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-
-    };//fim do stop up
-  };//fim do vetor up
-
-  if (vetor == 'down') {
-    if (modal.hasClass('stop')) {
-
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic', function () {
-        modal.removeAttr('class').addClass(position);
-      });
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
-
-    } //fim do stop down
-
-    else if (modal.hasClass('tease')) {
-
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic', function () {
-        modal.removeAttr('class').addClass(position);
-      });
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, sIndex: 2}, 200, 'easeInOutCubic');
-
-    } //fim do tease down
-
-    else if (modal.hasClass('full')) {
-
-      $('#modal-upper').removeClass('closed').addClass('opened');
-
-      let divHeight = $('.amostra').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic', function () {
-        modal.removeAttr('class').addClass(position);
-      });
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-
-    }; //fim do full down
-  };//fim do vetor up
-
-
-};//fim do modal animate
+  let deviceWidth = $(document).outerWidth();
+  console.log(deviceWidth)
+  $('.modal-image').transition({x: '-60vw', scale: 2}, 300, 'easeOutCubic', function () {
+    $('.modal-image img').attr('src', 'imgs/icons/007-island.svg');
+    $('.modal-image').transition({x: deviceWidth+40, scale: 2}, 0, function () {
+      $('.modal-image').transition({x: '42vw', yscale: 2}, 300, 'easeOutCubic');
+    });
+  });
+}
 
 //ESTILO DO MAPA - não colocar nada ABAIXO//estilo do mapa - NAO COLOCAR NADA ABAIXO
 var estilo = [
