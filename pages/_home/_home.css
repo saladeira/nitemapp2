@@ -72,12 +72,20 @@
   top: -50%;
 }
 
+#modal-bottom {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  z-index: 3;
+}
+
 #modal-content {
   position: relative;
+  top: 0;
   width: 100%;
   background-color: #fbfbff;
   /*#E4BAAE*/
-  height: 100vh;
+  min-height: 100vh;
 
   z-index: 3;
 
@@ -226,21 +234,6 @@
 
 .adicionar .botoes {
   /* padding-top: 1rem; */
-}
-
-.formulario {
-  overflow: hidden;
-  max-height: 0;
-
-  -webkit-transition: max-height 0.2s;
-  -moz-transition: max-height 0.2s;
-  -ms-transition: max-height 0.2s;
-  -o-transition: max-height 0.2s;
-  transition: max-height 0.2s;
-}
-
-.max-height {
-  max-height: 500px;
 }
 
 .botoes .botao {
@@ -464,4 +457,19 @@
     -webkit-transform: scale(0.8);
     transform: scale(0.8);
   }
+}
+
+.modal-form {
+  overflow: hidden;
+  max-height: 0;
+
+  -webkit-transition: max-height 0.5s;
+  -moz-transition: max-height 0.5s;
+  -ms-transition: max-height 0.5s;
+  -o-transition: max-height 0.5s;
+  transition: max-height 0.5s;
+}
+
+.modal-form.aberto{
+  max-height: 300px !important;
 }

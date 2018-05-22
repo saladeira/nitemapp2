@@ -23,13 +23,7 @@ $('#_home').css({
 $('#modal-bottom').swipe( {
   //Generic swipe handler for all directions
   swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
-
-    if (direction == 'up') {
-      modalAnimate($('#modal-content').attr('class'), direction);
-    } else if (direction == 'down') {
-      modalAnimate($('#modal-content').attr('class'), direction);
-    }
-
+    modalAnimate2(direction, meuMarcadorClicado.marcador)
   },
   threshold:50,
   fingers:'all'
@@ -41,52 +35,74 @@ $('select').on('focus', function () {
 
 $('input').on('focus', function () {
   $(this).removeClass('alert')
-})
+});
 
-$('.auxiliar').on('click', function (e) {
-  let clicado = $(this).attr('data-target');
-  console.log(clicado);
-
-    //$('.'+clicado).addClass('max-height');
-
-  modalAnimate('reload','', function () {
-    $('.'+clicado).addClass('max-height');
-  });
-
+$('.auxiliar').on('click', function () {
 
   $('.retorno').each(function () {
     $(this).find('p').removeClass('aux-ativo');
-    $('[data-target=' + clicado +'].retorno').find('p').addClass('aux-ativo');
   });
 
+  openFormAuxiliar($(this).attr('data-target'));
+});
 
-  if (clicado == 'add-local') {
-    $('#novoEnd').val($('.local-endereco').html());
-    $('#novoLat').val(meuMarcadorClicado.position.lat());
-    $('#novoLng').val(meuMarcadorClicado.position.lng());
-    $('#userID').val(localStorage.getItem('id'));
-  }
+function openFormAuxiliar(clicado) {
+  modalAnimate('reload','');
+  $('.'+clicado).find('.modal-form').addClass('aberto');
 
-  if (clicado == 'add-registro') {
+  modalAnimate('reload','');
+  console.log($('.'+clicado).find('.modal-form').outerHeight());
+}
 
-    $('.first').children().children().each(function () {
-      if ($(this).val() == '') {
-        $(this).addClass('alert')
-      }
-    });
-
-    if ($('#novoNome').val() != '' )
-
-    if ($('#novoNome').val() == '') {
-      $('#novoNome').addClass('alert');
-    } else if ($('#novoTipo').val() == '') {
-      $('#novoTipo').parent().addClass('alert');
-    } else {
-      console.log($('.first').serialize());
-      modalTrasit();
-      //registrarLocal($('.form').serialize());
-    }
-  }
-
-  //
-})
+// $('.auxiliar').on('click', function (e) {
+//   let clicado = $(this).attr('data-target');
+//   console.log(clicado);
+//
+//   $('.retorno').each(function () {
+//     $(this).find('p').removeClass('aux-ativo');
+//     $('[data-target=' + clicado +'].retorno').find('p').addClass('aux-ativo');
+//   });
+//
+//
+//   if (clicado == 'add-local') {
+//     if ($('.'+clicado).hasClass('hide')) {
+//       console.log('fechado');
+//       $('.'+clicado).removeClass('hide').find('form').addClass('aberto');
+//     } else {
+//       $('.'+clicado).addClass('hide').find('form').removeClass('aberto');
+//     }
+//     $('#novoEnd').val($('.local-endereco').html());
+//     $('#novoLat').val(meuMarcadorClicado.position.lat());
+//     $('#novoLng').val(meuMarcadorClicado.position.lng());
+//     $('#userID').val(localStorage.getItem('id'));
+//
+//     modalAnimate('reload','', function () {
+//       if ($('.modal-image').is(':offscreen')) {
+//         console.log('saiu')
+//       }
+//     });
+//   }
+//
+//   if (clicado == 'add-registro') {
+//
+//     $('.first').children().children().each(function () {
+//       if ($(this).val() == '') {
+//         $(this).addClass('alert')
+//       }
+//     });
+//
+//     if ($('#novoNome').val() != '' )
+//
+//     if ($('#novoNome').val() == '') {
+//       $('#novoNome').addClass('alert');
+//     } else if ($('#novoTipo').val() == '') {
+//       $('#novoTipo').parent().addClass('alert');
+//     } else {
+//       console.log($('.first').serialize());
+//       modalTrasit();
+//       //registrarLocal($('.form').serialize());
+//     }
+//   }
+//
+//   //
+// })

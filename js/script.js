@@ -1,5 +1,3 @@
-//loadView
-
 //metodo pra carregamento de conteudo das parciais
 var pageLoaded = null;
 
@@ -24,6 +22,10 @@ var filtroRaio = 100;
 var markerUserLoaded = false;
 
 var meuMarcadorClicado;
+
+var modalTeaser = false;
+var modalFull = false;
+var modalClosed = true;
 
 function loadView(tag, url, transition, callback) {
     if (url == '') {
@@ -724,7 +726,7 @@ function abrirInfo(marcador, latLng) {
 
         let meuEstado = $('#modal-content').attr('class');
 
-        modalAnimate('infoBox', '', function () {
+        modalAnimate2('up', marcador, function () {
           populateContent(endereco, 'Você está aqui! ;P', 'imgs/icons/014-placeholder.svg', '', '', '');
         });
 
@@ -753,7 +755,7 @@ function abrirInfo(marcador, latLng) {
       endereco += myAddress[2].short_name;
     }
 
-    modalAnimate('infoBox', '', function () {
+    modalAnimate2('up', marcador, function () {
       populateContent(endereco, 'Resultado da busca', 'imgs/icons/025-treasure-map.svg', '', '', '');
     });
 
@@ -764,7 +766,7 @@ function abrirInfo(marcador, latLng) {
     let infoPlace = registeredResults[meuMarcadorClicado.index];
     console.log(infoPlace);
 
-    modalAnimate('infoBox', '', function () {
+    modalAnimate2('up', marcador, function () {
       populateContent(infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons/007-island.svg', 'teste', 'teste', 'teste');
     });
   }
@@ -779,6 +781,7 @@ var modalEventos = true;
 
 function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
 
+  console.log(endereco, titulo, imgsrc, descricao, evento, badges)
   if (endereco != '') {
     $('p.local-endereco').html(endereco);
   } else {
@@ -823,6 +826,67 @@ function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
     modalBadges = false;
     $('.modal-wrapper .badges').css({display: 'none'});
   }
+
+};
+
+function modalAnimate2(vetor, marcador, callback) {
+
+  if (callback && typeof(callback) === "function") {
+    callback();
+  }
+
+  let modal = $('#modal-content');
+
+  let stageHeight = $(window).innerHeight();
+
+  let divHeight;
+
+  if (modalClosed) {
+
+    modalClosed = false;
+    modalTeaser = true;
+    modalFull = false;
+
+    if (vetor == 'up' ) {
+      if (marcador == 'user' || marcador == 'search') {
+        divHeight = $('.content.header').innerHeight()+$('.content.adicionar').innerHeight();
+      } else {
+        divHeight = $('.content.header').innerHeight()+$('.content.eventos').innerHeight()+$('.content.adicionar').innerHeight();
+      }
+
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+    }//fim do closed up
+
+    else if (vetor == 'down') {
+      $('#modal-content').transition({y: '0vh'}, 400, 'easeInBack');
+      $('.modal-image').transition({x: '42vw', y: '10vh', zIndex: 2, scale: 1}, 500, 'easeInBack');
+    }
+
+  }//fim do modal closed
+
+  else if (modalTeaser) {
+    if (marcador == 'user' || marcador == 'search') {
+      return false;
+    } else {
+      divHeight = $('.modal-wrapper').outerHeight();
+
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-upper').removeClass('opened').addClass('closed');
+      $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+5)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
+        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+          $('.modal-image').transition({x: '42vw', y: -(porcentSobe-3)+'vh', scale: 2}, 700, 'easeOutCubic');
+        })
+      });
+
+      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
+    }
+
+  }//fim do modal teaser
 
 }
 
@@ -963,13 +1027,33 @@ function modalAnimate(position, vetor, callback) {
   if (position == 'reload') {
     console.log('reload');
 
-    modal.removeAttr('class').addClass('tease');
-    let divHeight = $('.amostra').outerHeight();
-    let porcentSobe = (divHeight*100)/stageHeight;
+    if (modal.hasClass('tease')) {
 
-    $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-    $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-    $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+      modal.removeAttr('class').addClass('tease');
+      let divHeight = $('.amostra').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-content').transition({y: -(porcentSobe+33.6)+'vh'}, 300, 'easeOutCubic');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
+      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
+    }
+
+    else if (modal.hasClass('full')) {
+
+      modal.removeAttr('class').addClass('full');
+      let divHeight = $('.modal-wrapper').outerHeight();
+      let porcentSobe = (divHeight*100)/stageHeight;
+
+      $('#modal-upper').removeClass('opened').addClass('closed');
+      $('#modal-content').transition({y: -(porcentSobe+18.5)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
+      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
+        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 700, 'easeOutCubic');
+        })
+      });
+
+      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
+    }
   }
 }
 
