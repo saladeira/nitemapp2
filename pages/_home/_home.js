@@ -1,5 +1,4 @@
 $(function () {
-  console.log('aqui')
   $('#modal-upper').removeClass('closed').addClass('opened')
 })
 
@@ -23,7 +22,7 @@ $('#_home').css({
 $('#modal-bottom').swipe( {
   //Generic swipe handler for all directions
   swipe:function(event, direction, distance, duration, fingers, fingerData, currentDirection) {
-    modalAnimate2(direction, meuMarcadorClicado.marcador)
+    modalAnimate(direction, '', meuMarcadorClicado.marcador);
   },
   threshold:50,
   fingers:'all'
@@ -37,21 +36,21 @@ $('input').on('focus', function () {
   $(this).removeClass('alert')
 });
 
-$('.auxiliar').on('click', function () {
+$('.img-holder').on('click', function () {
+  let target = $(this).attr('data-target');
 
-  $('.retorno').each(function () {
-    $(this).find('p').removeClass('aux-ativo');
-  });
+  if (target == 'add-local') {
+    console.log('adiciona local')
+  }
 
-  openFormAuxiliar($(this).attr('data-target'));
-});
+  if (target == 'add-evento') {
+    console.log('adiciona evento')
+  }
+})
 
 function openFormAuxiliar(clicado) {
-  modalAnimate('reload','');
   $('.'+clicado).find('.modal-form').addClass('aberto');
-
-  modalAnimate('reload','');
-  console.log($('.'+clicado).find('.modal-form').outerHeight());
+  modalAnimate('', 'tease', '');
 }
 
 // $('.auxiliar').on('click', function (e) {

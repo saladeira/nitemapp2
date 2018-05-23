@@ -21,14 +21,22 @@
 
   <div id="modal-bottom" class="modal bottom closed">
 
-    <p class="modal-image">
-      <img src="imgs/icons/025-treasure-map.svg">
+    <p class="img-holder modal-image">
+      <img src="imgs/icons2/map.svg">
+    </p>
+
+    <p class="img-holder modal-add-local" data-target="add-local">
+      <img src="imgs/icons2/lighthouse.svg">
+    </p>
+
+    <p class="img-holder modal-add-evento" data-target="add-evento">
+      <img src="imgs/icons2/crown.svg">
     </p>
 
 
     <div id="modal-content">
 
-      <div class="modal-wrapper">
+      <div class="modal-wrapper default">
 
 
         <div class="content header">
@@ -50,7 +58,7 @@
 
         </div>
 
-        <div class="content adicionar">
+        <!-- <div class="content adicionar">
           <div class="botoes">
             <div class="botao auxiliar retorno blocal" data-target="add-local">
               <p><i class="fas fa-map-marker"></i> Adicionar local</p>
@@ -60,67 +68,9 @@
               <p><i class="fas fa-calendar-alt"></i> Adicionar Evento</p>
             </div>
           </div>
-        </div> <!-- fim do content adicionar -->
+        </div> -->
 
-        <div class="content add-local formulario">
-
-          <form class="form modal-form first">
-
-              <div class="input-holder small">
-                <input id="novoNome" type="text" name="novoNome" placeholder="Nome do local">
-              </div>
-
-              <!-- <div class="input-holder small">
-                <textarea id="novoDesc" type="text" name="novoDesc" placeholder="Descrição"></textarea>
-              </div> -->
-
-              <!-- <div class="input-holder small">
-                <input id="novoEnd" type="text" name="novoEnd" placeholder="Endereço">
-              </div> -->
-
-              <!-- <div class="input-holder small">
-                <input id="novoAberto" type="text" name="novoAberto" placeholder="Horário de funcionamento">
-              </div> -->
-
-              <div class="input-holder small">
-                <select id="novoTipo" name="novoTipo" required>
-                  <option value="" selected>Tipo de estabelecimento</option>
-                  <option value="bar">Bar</option>
-                  <option value="lanchonete">Lanchonete</option>
-                  <option value="pub">Pub</option>
-                  <option value="casa_de_shows">Casa de shows</option>
-                  <option value="casa_de_eventos">Casa de eventos</option>
-                </select>
-              </div>
-
-              <div class="input-holder small">
-                <select id="novoPublico" name="novoPublico">
-                  <option selected val="convidados">Apenas para convidados</option>
-                  <option val="publico">Aberto ao público</option>
-                </select>
-              </div>
-
-              <input id="novoLat" type="hidden" name="novoLat" value="">
-              <input id="novoLng" type="hidden" name="novoLng" value="">
-              <input id="novoRegistrado" type="hidden" name="novoRegistrado" value="sim">
-              <input id="userID" type="hidden" name="userID" value="">
-              <input id="novoEnd" type="hidden" name="novoEnd" value="">
-
-              <div class="botoes">
-                <div class="botao auxiliar bregistrar right" data-target="add-registro">
-                  <p>Registrar local <i class="fas fa-caret-right"></i></p>
-                </div>
-              </div>
-
-              <div class="spinner2 hide">
-                <div class="bounce1"></div>
-                <div class="bounce2"></div>
-                <div class="bounce3"></div>
-              </div>
-
-          </form><!-- fim do form -->
-
-        </div>
+        <!--  -->
 
         <div class="content descript">
           <p>Invidiosum nomen est, infame, suspectum. Cum id fugiunt, re eadem defendunt, quae Peripatetici, verba. Respondeat totidem verbis. Haec quo modo conveniant, non sane intellego. Quodcumque in mentem incideret, et quodcumque tamquam occurreret.</p>
@@ -160,6 +110,62 @@
 
         </div>
 
+      </div><!-- fim do modal wrapper -->
+
+      <div class="modal-wrapper form-local">
+
+        <div class="content header">
+          <h1 class="local-titulo"></h1>
+          <p class="local-endereco"></p>
+        </div>
+
+        <div class="content add-local formulario">
+
+          <form class="form modal-form first">
+
+              <div class="input-holder small">
+                <input id="novoNome" type="text" name="novoNome" placeholder="Nome do local">
+              </div>
+
+              <div class="input-holder small">
+                <select id="novoTipo" name="novoTipo" required>
+                  <option value="" selected>Tipo de estabelecimento</option>
+                  <option value="bar">Bar</option>
+                  <option value="lanchonete">Lanchonete</option>
+                  <option value="pub">Pub</option>
+                  <option value="casa_de_shows">Casa de shows</option>
+                  <option value="casa_de_eventos">Casa de eventos</option>
+                </select>
+              </div>
+
+              <div class="input-holder small">
+                <select id="novoPublico" name="novoPublico">
+                  <option selected val="convidados">Apenas para convidados</option>
+                  <option val="publico">Aberto ao público</option>
+                </select>
+              </div>
+
+              <input id="novoLat" type="hidden" name="novoLat" value="">
+              <input id="novoLng" type="hidden" name="novoLng" value="">
+              <input id="novoRegistrado" type="hidden" name="novoRegistrado" value="sim">
+              <input id="userID" type="hidden" name="userID" value="">
+              <input id="novoEnd" type="hidden" name="novoEnd" value="">
+
+              <div class="botoes">
+                <div class="botao auxiliar bregistrar right" data-target="add-registro">
+                  <p>Registrar local <i class="fas fa-caret-right"></i></p>
+                </div>
+              </div>
+
+              <div class="spinner2 hide">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+              </div>
+
+          </form>
+
+        </div>
       </div>
 
     </div>

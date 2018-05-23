@@ -23,9 +23,7 @@ var markerUserLoaded = false;
 
 var meuMarcadorClicado;
 
-var modalTeaser = false;
-var modalFull = false;
-var modalClosed = true;
+var modalPosition = 'close';
 
 function loadView(tag, url, transition, callback) {
     if (url == '') {
@@ -288,7 +286,6 @@ function watchPos (callback) {
     enableHighAccuracy: false,
     maximumAge: 0
   };
-  console.log('positioning')
   navigator.geolocation.watchPosition(
     function(position){
       if (callback && typeof(callback) === "function" && fireOnce) {
@@ -338,7 +335,7 @@ function setMapOnAll(map, tipo) {
 //executa a busca por endereço
 function codeAddress() {
 
-  modalAnimate('close', 'kill');
+  modalAnimate('', 'close', '')
 
   searchAddress = document.getElementById('search-address').value;
 
@@ -418,7 +415,7 @@ function initMap(pos) {
   });
 
   google.maps.event.addListener(map, 'click', function (event) {
-    modalAnimate('close', 'kill');
+    modalAnimate('', 'close', '')
   });
 
 }; // fim do init map
@@ -561,7 +558,6 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
   google.maps.event.addListener(marker, 'dragend', (function(marker, markerId, markerTipo) {
     return function(event) {
-      console.log('drag')
       marker.setPosition(event.latLng);
       $('#searchPlaceField').val('').blur();
       reverseGeocode(event.latLng, function(status, res) {
@@ -600,16 +596,12 @@ function addMarker(latLng, icone, label, tipo, drag, clique, index) {
 
 function registrarLocal(data) {
 
-  console.log(meuMarcadorClicado)
-  console.log(data)
-
   $.ajax({
       type: 'POST',
       url: 'https://www.esbrubles.com.br/nitemapp/placereg2.php',
       data: data,
       cache: false,
       beforeSend: function() {
-        // modalAnimate('close', 'down');
         $('.spinner2').removeClass('hide');
         $('.form').prop( "disabled", true );
       },
@@ -655,9 +647,7 @@ function getRegistered(raio, callback) {
           var JSONString = response.responseText; // Replace ... with your JSON String
 
           var JSONObject = $.parseJSON(JSONString);
-          //console.log(JSONObject);
           registeredResults = JSONObject;
-          console.log(registeredResults);
 
           if (callback && typeof(callback) === "function") {
             callback(registeredResults);
@@ -680,14 +670,11 @@ function addPlacesRegistered(obj) {
   setMapOnAll(null, 'registrado');
 
   for (let i = 0; i < obj.length; i++) {
-    //console.log(obj[i]);
 
     var pos = {
       lat: parseFloat(obj[i].place_lat),
       lng: parseFloat(obj[i].place_lng)
     }
-
-    //console.log(pos)
 
     addMarker(pos, registeredIcon, obj[i].place_nome, 'registrado', false, true, i)
   };
@@ -726,8 +713,8 @@ function abrirInfo(marcador, latLng) {
 
         let meuEstado = $('#modal-content').attr('class');
 
-        modalAnimate2('up', marcador, function () {
-          populateContent(endereco, 'Você está aqui! ;P', 'imgs/icons/014-placeholder.svg', '', '', '');
+        modalAnimate('', 'tease', marcador, function () {
+          populateContent(endereco, 'Você está aqui! ;P', 'imgs/icons2/map.svg', '', '', '');
         });
 
       } else {
@@ -742,8 +729,6 @@ function abrirInfo(marcador, latLng) {
 
     let myAddress = searchResults.address_components
 
-    console.log(myAddress);
-
     let endereco;
 
     if (myAddress[0].types == 'street_number') {
@@ -755,8 +740,8 @@ function abrirInfo(marcador, latLng) {
       endereco += myAddress[2].short_name;
     }
 
-    modalAnimate2('up', marcador, function () {
-      populateContent(endereco, 'Resultado da busca', 'imgs/icons/025-treasure-map.svg', '', '', '');
+    modalAnimate('up', 'tease', marcador, function () {
+      populateContent(endereco, 'Resultado da busca', 'imgs/icons2/search.svg', '', '', '');
     });
 
   }
@@ -764,14 +749,12 @@ function abrirInfo(marcador, latLng) {
   if (marcador == 'registrado') {
 
     let infoPlace = registeredResults[meuMarcadorClicado.index];
-    console.log(infoPlace);
 
-    modalAnimate2('up', marcador, function () {
-      populateContent(infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons/007-island.svg', 'teste', 'teste', 'teste');
+    modalAnimate('up', 'tease', marcador, function () {
+      populateContent(infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons2/lighthouse.svg', 'teste', 'teste', 'teste');
     });
   }
 
-  console.log(marcador)
 };
 
 var modalDesc = true;
@@ -781,7 +764,6 @@ var modalEventos = true;
 
 function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
 
-  console.log(endereco, titulo, imgsrc, descricao, evento, badges)
   if (endereco != '') {
     $('p.local-endereco').html(endereco);
   } else {
@@ -803,270 +785,182 @@ function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
   if (descricao != '') {
     console.log('tem descricao');
     modalDesc = true;
-    $('.modal-wrapper .descript').css({display: 'flex'});
+    $('.default .descript').css({display: 'flex'});
   } else {
     modalDesc = false;
-    $('.modal-wrapper .descript').css({display: 'none'});
+    $('.default .descript').css({display: 'none'});
   }
 
   if (evento != '') {
     console.log('tem evento');
     modalEventos = true;
-    $('.modal-wrapper .eventos').css({display: 'flex'});
+    $('.default .eventos').css({display: 'flex'});
   } else {
     modalEventos = false;
-    $('.modal-wrapper .eventos').css({display: 'none'});
+    $('.default .eventos').css({display: 'none'});
   }
 
   if (badges != '') {
     console.log('tem badges');
     modalBadges = true;
-    $('.modal-wrapper .badges').css({display: 'flex'});
+    $('.default .badges').css({display: 'flex'});
   } else {
     modalBadges = false;
-    $('.modal-wrapper .badges').css({display: 'none'});
+    $('.default .badges').css({display: 'none'});
   }
 
 };
 
-function modalAnimate2(vetor, marcador, callback) {
-
-  if (callback && typeof(callback) === "function") {
-    callback();
-  }
-
-  let modal = $('#modal-content');
-
-  let stageHeight = $(window).innerHeight();
-
-  let divHeight;
-
-  if (modalClosed) {
-
-    modalClosed = false;
-    modalTeaser = true;
-    modalFull = false;
-
-    if (vetor == 'up' ) {
-      if (marcador == 'user' || marcador == 'search') {
-        divHeight = $('.content.header').innerHeight()+$('.content.adicionar').innerHeight();
-      } else {
-        divHeight = $('.content.header').innerHeight()+$('.content.eventos').innerHeight()+$('.content.adicionar').innerHeight();
-      }
-
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-    }//fim do closed up
-
-    else if (vetor == 'down') {
-      $('#modal-content').transition({y: '0vh'}, 400, 'easeInBack');
-      $('.modal-image').transition({x: '42vw', y: '10vh', zIndex: 2, scale: 1}, 500, 'easeInBack');
-    }
-
-  }//fim do modal closed
-
-  else if (modalTeaser) {
-    if (marcador == 'user' || marcador == 'search') {
-      return false;
-    } else {
-      divHeight = $('.modal-wrapper').outerHeight();
-
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-upper').removeClass('opened').addClass('closed');
-      $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+5)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-          $('.modal-image').transition({x: '42vw', y: -(porcentSobe-3)+'vh', scale: 2}, 700, 'easeOutCubic');
-        })
-      });
-
-      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-    }
-
-  }//fim do modal teaser
-
-}
-
-function modalAnimate(position, vetor, callback) {
-
-  console.log(meuMarcadorClicado)
-
-  let modal = $('#modal-content');
-
-  let stageHeight = $(document).outerHeight();
+function modalClose (marcador) {
 
   $('#modal-upper').removeClass('closed').addClass('opened');
 
-  if (position == 'close') {
-    if (vetor == 'up') {
-      modal.removeAttr('class').addClass('tease');
-      let divHeight = $('.amostra').outerHeight();
-      console.log(divHeight);
-      let porcentSobe = (divHeight*100)/stageHeight;
+  if (modalPosition == 'full') {
+    $('#modal-content').transition({y: '0vh'}, 700, 'easeOutCubic');
+    $('.modal-image').transition({y: '5vh', zIndex: 2, scale: 2}, 800, 'easeOutCubic');
 
-      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-    }//fim do close up
+    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+    $('.modal-add-evento').transition({x: '34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+  } else {
+    $('#modal-content').transition({y: '0vh'}, 400, 'easeOutCubic');
+    $('.modal-image').transition({y: '5vh', zIndex: 2, scale: 2}, 500, 'easeOutCubic');
 
-    else if (vetor == 'down') {
-      $('#modal-upper').toggleClass('closed');
-      modal.removeAttr('class').addClass('close');
-    }//fim do close down
+    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+    $('.modal-add-evento').transition({x: '34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+  }
+};
 
-    else if (vetor == 'kill') {
-      modal.removeAttr('class').addClass('close');
+function modalTease (marcador) {
+  let modal = $('#modal-content');
+  let stageHeight = $(window).innerHeight();
+  let divHeight;
+  let porcentSobe;
 
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
-    };//fim do kill
+  $('#modal-upper').removeClass('closed').addClass('opened');
 
-  };//fim do close
+  if (marcador == 'user' || marcador == 'search') {
+    divHeight = $('.content.header').innerHeight();
+    porcentSobe = (divHeight*100)/stageHeight;
 
-  if (position == 'tease') {
-    if (vetor == 'up') {
+    $('.modal-add-local').transition({x: '-34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 800, 'easeOutBack');
+    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 900, 'easeOutBack');
+  } else {
+    divHeight = $('.content.header').innerHeight()+$('.content.eventos').innerHeight()//+$('.content.adicionar').innerHeight();
+    porcentSobe = (divHeight*100)/stageHeight;
 
-      if (!modalDesc && !modalBadges && !modalEventos) {
-        modal.removeAttr('class').addClass('tease');
-      } else {
-        modal.removeAttr('class').addClass('full');
+    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 800, 'easeOutBack');
+    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 900, 'easeOutBack');
+  };
 
-        let divHeight = $('.modal-wrapper').outerHeight();
-        let porcentSobe = (divHeight*100)/stageHeight;
+  $('#modal-content').transition({y: -porcentSobe+'vh'}, 400, 'easeOutBack');
+  $('.modal-image').transition({y: -(porcentSobe+8)+'vh', zIndex: 2, scale: 2}, 500, 'easeOutBack');
+  $('.default').transition({y: '0vh'}, 400, 'easeOutBack');
+};
 
-        $('#modal-upper').removeClass('opened').addClass('closed');
-        $('#modal-content').transition({y: -(porcentSobe+13.3)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
-        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-          $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-            $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 700, 'easeOutCubic');
-          })
-        });
+function modalFull (marcador) {
+  let modal = $('#modal-content');
+  let stageHeight = $(window).innerHeight();
+  let divHeight;
 
-        $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-      }
+  if (marcador == 'user' || marcador == 'search') {
+    return false;
+  } else {
+    divHeight = $('.default').outerHeight();
 
-    }//fim do tease up
+    $('#modal-upper').removeClass('opened').addClass('closed');
 
-    else if (vetor == 'down') {
-      modal.removeAttr('class').addClass('close');
+    let porcentSobe = (divHeight*100)/stageHeight;
 
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 200, 'easeInOutCubic');
-    }//fim do tease down
+    $('#modal-content').transition({y: -(porcentSobe+5)+'vh'}, 300, 'easeOutBack');
+    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+16)+'vh', zIndex: 2, scale: 0.8}, 600, 'easeOutBack', function () {
+      $('.modal-add-evento').transition({zIndex: 5}, 0, 'ease', function () {
+        $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+10)+'vh', scale: 0.8}, 500, 'easeOutBack')
+      })
+    });
+    $('.modal-image').transition({y: -(porcentSobe+18)+'vh', scale: 2}, 400, 'easeOutBack', function () {
+      $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
+        $('.modal-image').transition({y: -(porcentSobe+12)+'vh', scale: 2}, 300, 'easeOutBack');
+      })
+    });
 
-    else if (vetor == 'kill') {
-      modal.removeAttr('class').addClass('close');
+    $('.default').transition({y: '5vh'}, 300, 'easeOutBack');
+  };
+}
 
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
-    };//fim do kill
+function modalTransit(vetor, marcador, posModal, callback) {
+  console.log(vetor, marcador, modalPosition);
 
-  };//fim do tease
+  let modal = $('#modal-content');
+  let stageHeight = $(window).innerHeight();
+  let divHeight;
 
-  if (position == 'full') {
-    if (vetor == 'up') {
-      modal.removeAttr('class').addClass('full');
-    }//fim do full up
+  if (vetor == 'left' && posModal == 'tease') {
+    divHeight = $('.form-local').innerHeight();
 
-    else if (vetor == 'down') {
-      modal.removeAttr('class').addClass('tease');
-      let divHeight = $('.amostra').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
+    let porcentSobe = (divHeight*100)/stageHeight;
 
-      $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-    }//fim do full down
+    $('.default').transition({x: '-100vw', y: '0vh'}, 300, 'easeOutCubic');
+    $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
+    $('.form-local').transition({x: '0vw', y: '0vh'}, 300, 'easeOutCubic');
 
-    else if (vetor == 'kill') {
-      modal.removeAttr('class').addClass('close');
+    modalPosition = 'form-local';
+  } else if (vetor == 'right' && posModal == 'form-local') {
+    divHeight = $('.default').outerHeight();
 
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic');
-    };//fim do full kill
+    let porcentSobe = (divHeight*100)/stageHeight;
 
-  };//fim do full
+    $('.default').transition({x: '0vw', y: '0vh'}, 300, 'easeOutCubic');
+    $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
+    $('.form-local').transition({x: '100vw', y: '0vh'}, 300, 'easeOutCubic');
 
-  if (position == 'infoBox') {
-    if (modal.hasClass('close')) {
-
-      if (callback && typeof(callback) === "function") {
-        callback();
-        modal.removeAttr('class').addClass('tease');
-        let divHeight = $('.amostra').outerHeight();
-        console.log(divHeight);
-        let porcentSobe = (divHeight*100)/stageHeight;
-
-        $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-        $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-        $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-      };
-
-    } else {
-      modal.removeAttr('class').addClass('tease');
-
-      $('#modal-content').transition({y: '0vh'}, 300, 'easeInOutCubic');
-      $('.modal-image').transition({x: '40vw', y: '20vh', scale: 1, zIndex: 2}, 700, 'easeInOutCubic', function () {
-        if (callback && typeof(callback) === "function") {
-          callback();
-          modal.removeAttr('class').addClass('tease');
-          let divHeight = $('.amostra').outerHeight();
-          let porcentSobe = (divHeight*100)/stageHeight;
-
-          $('#modal-content').transition({y: -(porcentSobe+8.4)+'vh'}, 300, 'easeOutCubic');
-          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-          $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-        };
-      });
-    }
-  };//fim do Infobox
-
-  if (position == 'reload') {
-    console.log('reload');
-
-    if (modal.hasClass('tease')) {
-
-      modal.removeAttr('class').addClass('tease');
-      let divHeight = $('.amostra').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-content').transition({y: -(porcentSobe+33.6)+'vh'}, 300, 'easeOutCubic');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+7)+'vh', zIndex: 2, scale: 2}, 700, 'easeOutCubic');
-      $('.modal-wrapper').transition({y: '0vh'}, 500, 'ease');
-    }
-
-    else if (modal.hasClass('full')) {
-
-      modal.removeAttr('class').addClass('full');
-      let divHeight = $('.modal-wrapper').outerHeight();
-      let porcentSobe = (divHeight*100)/stageHeight;
-
-      $('#modal-upper').removeClass('opened').addClass('closed');
-      $('#modal-content').transition({y: -(porcentSobe+18.5)+'vh'}, 500, 'easeOutCubic').removeAttr('class').addClass('full');
-      $('.modal-image').transition({x: '42vw', y: -(porcentSobe+19.3)+'vh', scale: 2}, 500, 'easeOutCubic', function () {
-        $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-          $('.modal-image').transition({x: '42vw', y: -(porcentSobe+10.3)+'vh', scale: 2}, 700, 'easeOutCubic');
-        })
-      });
-
-      $('.modal-wrapper').transition({y: '5vh'}, 900, 'easeOutCubic');
-    }
+    modalPosition = 'tease';
   }
 }
 
-function modalTrasit() {
+function modalAnimate(vetor, goTo, marcador, callback) {
 
-  let deviceWidth = $(document).outerWidth();
-  console.log(deviceWidth)
-  $('.modal-image').transition({x: '-60vw', scale: 2}, 300, 'easeOutCubic', function () {
-    $('.modal-image img').attr('src', 'imgs/icons/007-island.svg');
-    $('.modal-image').transition({x: deviceWidth+40, scale: 2}, 0, function () {
-      $('.modal-image').transition({x: '42vw', yscale: 2}, 300, 'easeOutCubic');
-    });
-  });
+  if (callback && typeof(callback) === "function") {
+    callback();
+  };
+
+  //go to close
+  if (goTo == 'close') {
+    modalPosition = goTo;
+    modalClose(marcador);
+  }
+  //go to tease
+  else if (goTo == 'tease') {
+    modalPosition = goTo;
+    modalTease(marcador)
+  }
+  //go to full
+  else if (goTo == 'full') {
+    modalPosition = goTo;
+    modalFull(marcador)
+  }
+  //qualquer outro
+  else {
+    if (vetor == 'up' && modalPosition == 'close') {
+      modalTease(marcador);
+      modalPosition = 'tease';
+    } else if (vetor == 'up' && modalPosition == 'tease') {
+      modalFull(marcador);
+      if (marcador == 'user' || marcador == 'search') {
+        modalPosition = 'tease';
+      } else {
+        modalPosition = 'full';
+      }
+    } else if (vetor == 'down' && modalPosition == 'full') {
+      modalTease(marcador);
+      modalPosition = 'tease';
+    } else if (vetor == 'down' && modalPosition == 'tease') {
+      modalClose(marcador);
+      modalPosition = 'close';
+    } else {
+      modalTransit(vetor, marcador, modalPosition);
+      console.log('else')
+    }
+  }
 }
 
 //ESTILO DO MAPA - não colocar nada ABAIXO//estilo do mapa - NAO COLOCAR NADA ABAIXO
