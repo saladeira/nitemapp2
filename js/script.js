@@ -714,7 +714,7 @@ function abrirInfo(marcador, latLng) {
         let meuEstado = $('#modal-content').attr('class');
 
         modalAnimate('', 'tease', marcador, function () {
-          populateContent(endereco, 'Você está aqui! ;P', 'imgs/icons2/map.svg', '', '', '');
+          populateContent('default', endereco, 'Você está aqui! ;P', 'imgs/icons2/map.svg', '', '', '');
         });
 
       } else {
@@ -741,7 +741,7 @@ function abrirInfo(marcador, latLng) {
     }
 
     modalAnimate('up', 'tease', marcador, function () {
-      populateContent(endereco, 'Resultado da busca', 'imgs/icons2/search.svg', '', '', '');
+      populateContent('default', endereco, 'Resultado da busca', 'imgs/icons2/search.svg', '', '', '');
     });
 
   }
@@ -751,7 +751,7 @@ function abrirInfo(marcador, latLng) {
     let infoPlace = registeredResults[meuMarcadorClicado.index];
 
     modalAnimate('up', 'tease', marcador, function () {
-      populateContent(infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons2/lighthouse.svg', 'teste', 'teste', 'teste');
+      populateContent('default', infoPlace.place_ende, infoPlace.place_nome, 'imgs/icons2/lighthouse.svg', 'teste', 'teste', 'teste');
     });
   }
 
@@ -762,51 +762,51 @@ var modalBadges = true;
 var modalEventos = true;
 
 
-function populateContent(endereco, titulo, imgsrc, descricao, evento, badges) {
+function populateContent(grupo, endereco, titulo, imgsrc, descricao, evento, badges) {
+
 
   if (endereco != '') {
-    $('p.local-endereco').html(endereco);
+    $('.' + grupo + ' p.local-endereco').html(endereco);
   } else {
-    $('p.local-endereco').html('Sem endereço');
+    $('.' + grupo + ' p.local-endereco').html('Sem endereço');
   }
 
   if (titulo != '') {
-    $('h1.local-titulo').html(titulo)
+    $('.' + grupo + ' h1.local-titulo').html(titulo)
   } else {
-    $('h1.local-titulo').html('Ué, nada aqui...')
+    $('.' + grupo + ' h1.local-titulo').html('Ué, nada aqui...')
   }
 
   if (imgsrc != '') {
-    $('.modal-image img').attr('src', imgsrc);
+    $('.' + grupo + ' .header-img img').attr('src', imgsrc);
   } else {
-    $('.modal-image img').attr('src', 'imgs/icons/015-skull-and-bones.svg');
+    $('.' + grupo + ' .header-img img').attr('src', 'imgs/icons/015-skull-and-bones.svg');
   }
 
   if (descricao != '') {
-    console.log('tem descricao');
     modalDesc = true;
-    $('.default .descript').css({display: 'flex'});
+    $('.' + grupo + ' .default .descript').css({display: 'flex'});
   } else {
     modalDesc = false;
-    $('.default .descript').css({display: 'none'});
+    $('.' + grupo + ' .default .descript').css({display: 'none'});
   }
 
   if (evento != '') {
     console.log('tem evento');
     modalEventos = true;
-    $('.default .eventos').css({display: 'flex'});
+    $('.' + grupo + ' .default .eventos').css({display: 'flex'});
   } else {
     modalEventos = false;
-    $('.default .eventos').css({display: 'none'});
+    $('.' + grupo + ' .default .eventos').css({display: 'none'});
   }
 
   if (badges != '') {
     console.log('tem badges');
     modalBadges = true;
-    $('.default .badges').css({display: 'flex'});
+    $('.' + grupo + ' .default .badges').css({display: 'flex'});
   } else {
     modalBadges = false;
-    $('.default .badges').css({display: 'none'});
+    $('.' + grupo + ' .default .badges').css({display: 'none'});
   }
 
 };
@@ -817,16 +817,14 @@ function modalClose (marcador) {
 
   if (modalPosition == 'full') {
     $('#modal-content').transition({y: '0vh'}, 700, 'easeOutCubic');
-    $('.modal-image').transition({y: '5vh', zIndex: 2, scale: 2}, 800, 'easeOutCubic');
 
-    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
-    $('.modal-add-evento').transition({x: '34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+    $('.modal-add-local').transition({y: '0vh', zIndex: 2}, 600, 'easeInBack')
+    $('.modal-add-evento').transition({y: '0vh', zIndex: 2}, 500, 'easeInBack')
   } else {
     $('#modal-content').transition({y: '0vh'}, 400, 'easeOutCubic');
-    $('.modal-image').transition({y: '5vh', zIndex: 2, scale: 2}, 500, 'easeOutCubic');
 
-    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
-    $('.modal-add-evento').transition({x: '34vw', y: '0vh', zIndex: 2, scale: 0.8}, 700, 'easeOutCubic');
+    $('.modal-add-local').transition({y: '0vh', zIndex: 2}, 400, 'easeInBack')
+    $('.modal-add-evento').transition({y: '0vh', zIndex: 2}, 300, 'easeInBack')
   }
 };
 
@@ -839,22 +837,28 @@ function modalTease (marcador) {
   $('#modal-upper').removeClass('closed').addClass('opened');
 
   if (marcador == 'user' || marcador == 'search') {
-    divHeight = $('.content.header').innerHeight();
+    divHeight = $('.content.header').outerHeight();
     porcentSobe = (divHeight*100)/stageHeight;
 
-    $('.modal-add-local').transition({x: '-34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 800, 'easeOutBack');
-    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 900, 'easeOutBack');
+    $('.modal-add-local').transition({y: -(porcentSobe+5)+'vh'}, 450, 'easeOutCubic', function () {
+      $('.modal-add-local').transition({y: -(porcentSobe+2)+'vh', zIndex: 4}, 300, 'easeOutBack')
+    })
+    $('.modal-add-evento').transition({y: -(porcentSobe+5)+'vh'}, 350, 'easeOutCubic', function () {
+      $('.modal-add-evento').transition({y: -(porcentSobe+2)+'vh', zIndex: 4}, 200, 'easeOutBack')
+    })
   } else {
-    divHeight = $('.content.header').innerHeight()+$('.content.eventos').innerHeight()//+$('.content.adicionar').innerHeight();
+    divHeight = $('.content.header').outerHeight()+$('.content.eventos').outerHeight()//+$('.content.adicionar').innerHeight();
     porcentSobe = (divHeight*100)/stageHeight;
 
-    $('.modal-add-local').transition({x: '-34vw', y: '0vh', zIndex: 2, scale: 0.8}, 800, 'easeOutBack');
-    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+6)+'vh', zIndex: 2, scale: 0.8}, 900, 'easeOutBack');
+    $('.modal-add-local').transition({y: '0vh', zIndex: 2}, 0, 'easeInBack')
+
+    $('.modal-add-evento').transition({y: -(porcentSobe+5)+'vh'}, 300, 'easeOutCubic', function () {
+      $('.modal-add-evento').transition({y: -(porcentSobe+2)+'vh', zIndex: 4}, 300, 'easeOutBack')
+    })
   };
 
-  $('#modal-content').transition({y: -porcentSobe+'vh'}, 400, 'easeOutBack');
-  $('.modal-image').transition({y: -(porcentSobe+8)+'vh', zIndex: 2, scale: 2}, 500, 'easeOutBack');
-  $('.default').transition({y: '0vh'}, 400, 'easeOutBack');
+  $('#modal-content').transition({y: -porcentSobe+'vh'}, 400, 'easeOutCubic');
+
 };
 
 function modalFull (marcador) {
@@ -871,49 +875,46 @@ function modalFull (marcador) {
 
     let porcentSobe = (divHeight*100)/stageHeight;
 
-    $('#modal-content').transition({y: -(porcentSobe+5)+'vh'}, 300, 'easeOutBack');
-    $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+16)+'vh', zIndex: 2, scale: 0.8}, 600, 'easeOutBack', function () {
-      $('.modal-add-evento').transition({zIndex: 5}, 0, 'ease', function () {
-        $('.modal-add-evento').transition({x: '34vw', y: -(porcentSobe+10)+'vh', scale: 0.8}, 500, 'easeOutBack')
-      })
-    });
-    $('.modal-image').transition({y: -(porcentSobe+18)+'vh', scale: 2}, 400, 'easeOutBack', function () {
-      $('.modal-image').transition({zIndex: 5}, 0, 'ease', function () {
-        $('.modal-image').transition({y: -(porcentSobe+12)+'vh', scale: 2}, 300, 'easeOutBack');
-      })
-    });
+    $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
+    $('.modal-add-evento').transition({y: -(porcentSobe+2)+'vh', zIndex: 4}, 300, 'easeOutBack');
 
-    $('.default').transition({y: '5vh'}, 300, 'easeOutBack');
   };
 }
 
 function modalTransit(vetor, marcador, posModal, callback) {
-  console.log(vetor, marcador, modalPosition);
+  console.log(vetor, marcador, posModal);
 
   let modal = $('#modal-content');
   let stageHeight = $(window).innerHeight();
   let divHeight;
 
-  if (vetor == 'left' && posModal == 'tease') {
-    divHeight = $('.form-local').innerHeight();
+  if (vetor == 'left') {
+    divHeight = $('.form-local').outerHeight();
 
     let porcentSobe = (divHeight*100)/stageHeight;
+
+    populateContent('form-local', $('.default .header-info p').html(), 'Adicionar um novo local', 'imgs/icons2/picture.svg', '', '', '')
 
     $('.default').transition({x: '-100vw', y: '0vh'}, 300, 'easeOutCubic');
     $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
     $('.form-local').transition({x: '0vw', y: '0vh'}, 300, 'easeOutCubic');
 
-    modalPosition = 'form-local';
-  } else if (vetor == 'right' && posModal == 'form-local') {
-    divHeight = $('.default').outerHeight();
-
-    let porcentSobe = (divHeight*100)/stageHeight;
+    //modalPosition = 'form-local';
+  } else if (vetor == 'right') {
 
     $('.default').transition({x: '0vw', y: '0vh'}, 300, 'easeOutCubic');
-    $('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
+    //$('#modal-content').transition({y: -(porcentSobe)+'vh'}, 300, 'easeOutCubic');
     $('.form-local').transition({x: '100vw', y: '0vh'}, 300, 'easeOutCubic');
 
-    modalPosition = 'tease';
+    //console.log(posModal)
+    modalAnimate('', posModal, marcador);
+    // divHeight = $('.default').outerHeight();
+    //
+    // let porcentSobe = (divHeight*100)/stageHeight;
+    //
+
+    //
+    // modalPosition = 'tease';
   }
 }
 
